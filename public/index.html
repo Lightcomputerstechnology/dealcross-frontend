@@ -1,13 +1,52 @@
+<!-- File: public/index.html -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dealcross</title>
+    <title>Dealcross — Escrow & Share Trading Platform</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Dealcross is a secure platform for escrow-powered transactions, crypto & share trading, and fraud prevention." />
+    <meta name="keywords" content="dealcross, escrow, crypto trading, share trading, secure deals, fintech" />
+    <meta name="author" content="Dealcross Team" />
+
+    <!-- Open Graph Meta -->
+    <meta property="og:title" content="Dealcross — Secure Deals, Escrow, Trading" />
+    <meta property="og:description" content="Escrow transactions, share trading, fraud protection — all in one place." />
+    <meta property="og:image" content="/og-image.png" />
+    <meta property="og:url" content="https://dealcross.com" />
+    <meta property="og:type" content="website" />
+
+    <!-- Twitter Meta -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Dealcross — Escrow & Share Trading Platform" />
+    <meta name="twitter:description" content="Secure online transactions and trading backed by escrow protection." />
+    <meta name="twitter:image" content="/og-image.png" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/favicon.png" />
+
+    <!-- Fonts & Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+    <meta name="theme-color" content="#0f172a" />
+
+    <!-- Optional: Google Analytics -->
+    <!-- Replace G-XXXXXXX with your tracking ID -->
+    <!--
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){ dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXX');
+    </script>
+    -->
   </head>
-  <body class="dark:bg-gray-950 dark:text-white">
+  <body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-white">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
-</html>
+      </html>
