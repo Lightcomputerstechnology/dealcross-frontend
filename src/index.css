@@ -1,7 +1,15 @@
+/* File: src/index.css */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Global style tweaks */
+html, body {
+  @apply bg-slate-50 dark:bg-[#0b1822] text-slate-900 dark:text-slate-100;
+}
+
+/* Smooth transitions for theme switch */
 body {
-  @apply bg-white dark:bg-gray-950 text-gray-900 dark:text-white;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
