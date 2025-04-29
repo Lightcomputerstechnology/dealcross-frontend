@@ -1,29 +1,37 @@
 // File: src/components/ThemeToggle.jsx
+
 import React, { useEffect, useState } from 'react';
-import { FiSun, FiMoon } from 'react-icons/fi';
+import { Moon, Sun } from 'lucide-react';
 
 const ThemeToggle = () => {
-  const [darkMode, setDarkMode] = useState(() =>
-    localStorage.getItem('theme') === 'dark'
-  );
+  const [theme, setTheme] = useState(() => {
+    const stored = localStorage.getItem('theme');
+    return stored || 'dark'; // Default to dark
+  });
 
   useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add('dark');
+    const root = document.documentElement;
+    if (theme === 'dark') {
+      root.classList.add('dark');
       localStorage.setItem('theme', 'dark');
     } else {
-      document.documentElement.classList.remove('dark');
+      root.classList.remove('dark');
       localStorage.setItem('theme', 'light');
     }
-  }, [darkMode]);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  };
 
   return (
     <button
-      onClick={() => setDarkMode(!darkMode)}
-      className="text-xl text-gray-600 dark:text-gray-300"
+      onClick={toggleTheme}
+      className="ml-2 p-2 rounded-full bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white hover:shadow transition duration-300"
+      title="Toggle Theme"
       aria-label="Toggle Theme"
     >
-      {darkMode ? <FiSun /> : <FiMoon />}
+      {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
     </button>
   );
 };
