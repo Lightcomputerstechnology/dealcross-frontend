@@ -1,35 +1,24 @@
-// File: src/components/SiteLayout.jsx
+// File: src/components/PromoBanner.jsx
 
-import React from "react";
-import { Outlet } from "react-router-dom";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import Logo from "@/assets/dealcross-logo.png";
-import SEOHead from "@/components/SEOHead";
-import PromoBanner from "@/components/PromoBanner";
-import BackToTopButton from "@/components/BackToTopButton";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Megaphone } from 'lucide-react';
 
-const SiteLayout = () => {
+const PromoBanner = () => {
   return (
-    <div className="relative flex flex-col min-h-screen bg-white dark:bg-gray-900 transition duration-300 overflow-hidden">
-      {/* Global watermark background */}
-      <img
-        src={Logo}
-        alt=""
-        aria-hidden="true"
-        className="absolute inset-0 w-full h-full object-contain opacity-5 pointer-events-none z-0 select-none"
-      />
-
-      <div className="relative z-10 flex flex-col min-h-screen">
-        <SEOHead />
-        <PromoBanner />
-        <Navbar />
-        <main className="flex-grow px-4 py-6 md:px-8">
-          <Outlet />
-        </main>
-        <Footer />
-        <BackToTopButton />
+    <div className="bg-yellow-100 dark:bg-yellow-800 text-yellow-900 dark:text-yellow-100 px-4 py-2 text-sm font-medium flex items-center justify-between animate-fade-in">
+      <div className="flex items-center gap-2">
+        <Megaphone className="w-4 h-4" />
+        <span>
+          New! Enjoy <strong>0% escrow fees</strong> this week —{' '}
+          <Link to="/upgrade" className="underline hover:text-yellow-700 dark:hover:text-yellow-300">
+            Upgrade now
+          </Link>
+        </span>
       </div>
+
+      {/* Optional Close (expandable in future) */}
+      {/* <button className="ml-4 text-xs hover:underline">Dismiss</button> */}
     </div>
   );
 };
