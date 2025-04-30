@@ -1,5 +1,3 @@
-// File: src/components/AdminSidebar.jsx
-
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
@@ -11,23 +9,44 @@ import {
   FiPieChart,
   FiLock,
   FiSettings,
+  FiFileText,
+  FiTrendingUp,
+  FiList,
+  FiSearch,
+  FiCheckCircle,
+  FiServer,
+  FiRefreshCw,
+  FiDatabase,
+  FiFile,
+  FiKey,
 } from 'react-icons/fi';
 
 const navItems = [
-  { path: '/admin', icon: <FiBarChart2 />, label: 'Dashboard' },
-  { path: '/users', icon: <FiUsers />, label: 'Users' },
+  { path: '/admin-dashboard', icon: <FiBarChart2 />, label: 'Dashboard' },
+  { path: '/user-management', icon: <FiUsers />, label: 'All Users' },
+  { path: '/user-controls', icon: <FiList />, label: 'User Controls' },
+  { path: '/admin-kyc-reviews', icon: <FiCheckCircle />, label: 'KYC Reviews' },
   { path: '/dispute-log', icon: <FiAlertTriangle />, label: 'Disputes' },
-  { path: '/deal-activity-log', icon: <FiClipboard />, label: 'Activity Log' },
-  { path: '/analytics', icon: <FiPieChart />, label: 'Analytics' },
-  { path: '/fraud-log', icon: <FiLock />, label: 'Fraud Reports' },
-  { path: '/settings', icon: <FiSettings />, label: 'Settings' },
+  { path: '/admin-deals', icon: <FiClipboard />, label: 'Deal Log' },
+  { path: '/pending-deals', icon: <FiActivity />, label: 'Pending Deals' },
+  { path: '/admin-analytics', icon: <FiPieChart />, label: 'Analytics' },
+  { path: '/fraud-log', icon: <FiLock />, label: 'Fraud Alerts' },
+  { path: '/audit-log', icon: <FiFileText />, label: 'Audit Logs' },
+  { path: '/admin-search', icon: <FiSearch />, label: 'Search Users' },
+  { path: '/referral-logs', icon: <FiTrendingUp />, label: 'Referral Logs' },
+  { path: '/real-time-metrics', icon: <FiRefreshCw />, label: 'Live Metrics' },
+  { path: '/system-logs', icon: <FiDatabase />, label: 'System Logs' },
+  { path: '/server-health', icon: <FiServer />, label: 'Server Health' },
+  { path: '/exchange-rates', icon: <FiTrendingUp />, label: 'Exchange Rates' },
+  { path: '/subscription-plans', icon: <FiKey />, label: 'Plan Manager' },
+  { path: '/admin-settings', icon: <FiSettings />, label: 'Settings' },
 ];
 
 const AdminSidebar = () => {
   const location = useLocation();
 
   return (
-    <aside className="w-64 bg-[#1e293b] p-6 space-y-6 min-h-screen sticky top-0 shadow-md">
+    <aside className="w-64 bg-[#1e293b] p-6 space-y-6 min-h-screen sticky top-0 shadow-md z-50">
       <h2 className="text-2xl font-bold text-white mb-4 tracking-wide">
         Dealcross Admin
       </h2>
