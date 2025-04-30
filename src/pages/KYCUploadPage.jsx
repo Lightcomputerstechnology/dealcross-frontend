@@ -1,23 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Helmet } from 'react-helmet';
+import { toast } from 'react-hot-toast';
+import { getKYCStatus } from '@/api'; // assuming you’ve imported this already
+import { uploadKYC } from '@/api/optional'; // file-based KYC API
+import { useUser } from '@/context/UserContext';
 
 const KYCUploadPage = () => {
-  const [form, setForm] = useState({ user_id: '', document_type: '', document_file: null });
+  const { user } = useUser(); // get logged-in user
+  const [form, setForm] = useState({ document_type: '', document_file: null });
   const [status, setStatus] = useState({ type: '', message: '' });
   const [kycStatus, setKycStatus] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Fetch KYC status
   const fetchKycStatus = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.get('https://d-final.onrender.com/kyc/user', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setKycStatus(res.data);
+      const data = await getKYCStatus();
+      setKycStatus(data);
     } catch (err) {
-      console.error(err);
       setKycStatus(null);
     }
   };
@@ -28,15 +27,10 @@ const KYCUploadPage = () => {
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    if (name === 'document_file') {
-      setForm({ ...form, document_file: files[0] });
-    } else {
-      setForm({ ...form, [name]: value });
-    }
-  };
-
-  const resetForm = () => {
-    setForm({ user_id: '', document_type: '', document_file: null });
+    setForm((prev) => ({
+      ...prev,
+      [name]: name === 'document_file' ? files[0] : value,
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -44,30 +38,17 @@ const KYCUploadPage = () => {
     setLoading(true);
     setStatus({ type: '', message: '' });
 
-    const formData = new FormData();
-    formData.append('user_id', form.user_id);
-    formData.append('document_type', form.document_type);
-    formData.append('document_file', form.document_file);
-
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.post('https://d-final.onrender.com/kyc/upload', formData, {
-        headers: { 
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const formData = new FormData();
+      formData.append('document_type', form.document_type);
+      formData.append('document_file', form.document_file);
 
-      if (response.status === 200) {
-        setStatus({ type: 'success', message: 'KYC submitted successfully.' });
-        resetForm();
-        fetchKycStatus(); // Refresh status
-      } else {
-        setStatus({ type: 'error', message: 'Unexpected response. Please try again.' });
-      }
-    } catch (error) {
-      console.error(error);
-      setStatus({ type: 'error', message: error.response?.data?.detail || 'Failed to submit KYC.' });
+      await uploadKYC(formData);
+      setStatus({ type: 'success', message: 'KYC submitted successfully.' });
+      fetchKycStatus();
+      setForm({ document_type: '', document_file: null });
+    } catch (err) {
+      setStatus({ type: 'error', message: err.message || 'Failed to submit KYC.' });
     } finally {
       setLoading(false);
     }
@@ -99,18 +80,6 @@ const KYCUploadPage = () => {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label htmlFor="user_id" className="block mb-1">User ID</label>
-              <input
-                type="number"
-                name="user_id"
-                value={form.user_id}
-                onChange={handleChange}
-                className="w-full px-4 py-2 rounded border bg-gray-100 dark:bg-gray-800"
-                placeholder="Enter your user ID"
-                required
-              />
-            </div>
             <div>
               <label htmlFor="document_type" className="block mb-1">Document Type</label>
               <select
