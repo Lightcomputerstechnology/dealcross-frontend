@@ -195,6 +195,24 @@ export const disputeDeal = async (dealId, reason) => {
   }
 };
 
+export const getPendingPairings = async () => {
+  try {
+    const res = await API.get('/deals/pairing/pending');
+    return res.data;
+  } catch (err) {
+    handleError(err);
+  }
+};
+
+export const confirmPairing = async (pairingId) => {
+  try {
+    const res = await API.post(`/deals/pairing/confirm/${pairingId}`);
+    return res.data;
+  } catch (err) {
+    handleError(err);
+  }
+};
+
 //
 // ========== SUBSCRIPTION UPGRADE ==========
 //
