@@ -1,13 +1,14 @@
+// File: src/pages/UserManagement.jsx
+
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { FiUsers, FiUserCheck, FiUserX, FiRefreshCw } from 'react-icons/fi';
-import { getAllUsers, banUser, unbanUser } from '@/api';  // <— API integration
+import { getAllUsers, banUser, unbanUser } from '@/api';
 import { toast } from 'react-hot-toast';
 import { useRequireAdmin } from '@/context/UserContext';
 
 const UserManagement = () => {
-  useRequireAdmin(); // Protect page for admins
-
+  const { user } = useRequireAdmin();
   const [users, setUsers] = useState([]);
   const [status, setStatus] = useState('Loading users...');
   const [refreshing, setRefreshing] = useState(false);
@@ -15,27 +16,24 @@ const UserManagement = () => {
   const fetchUsers = async () => {
     setRefreshing(true);
     try {
-      const data = await getAllUsers();  // calls backend
+      const data = await getAllUsers();
       if (!data || data.length === 0) {
         setStatus('No users found.');
       } else {
         setUsers(data);
         setStatus(null);
       }
-    } catch {
+    } catch (error) {
       setStatus('Failed to load users.');
+      toast.error(error.message || 'Unable to fetch users.');
     } finally {
       setRefreshing(false);
     }
   };
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
   const handleBan = async (id) => {
     try {
-      await banUser(id);               // calls backend
+      await banUser(id);
       toast.success('User banned successfully.');
       fetchUsers();
     } catch (err) {
@@ -45,13 +43,17 @@ const UserManagement = () => {
 
   const handleUnban = async (id) => {
     try {
-      await unbanUser(id);             // calls backend
+      await unbanUser(id);
       toast.success('User unbanned successfully.');
       fetchUsers();
     } catch (err) {
       toast.error(err.message || 'Failed to unban user.');
     }
   };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   return (
     <>
@@ -69,7 +71,7 @@ const UserManagement = () => {
           <button
             onClick={fetchUsers}
             disabled={refreshing}
-            className="flex items-center gap-1 text-blue-400 hover:text-blue-200 text-sm transition"
+            className="flex items-center gap-1 text-blue-400 hover:text-blue-200 text-sm"
           >
             <FiRefreshCw className={refreshing ? 'animate-spin' : ''} />
             Refresh
@@ -79,10 +81,10 @@ const UserManagement = () => {
         {status && <p className="text-yellow-400 mb-4 font-medium">{status}</p>}
 
         {users.length > 0 && (
-          <div className="overflow-x-auto">
-            <table className="min-w-full bg-[#1e293b] rounded-lg overflow-hidden">
-              <thead>
-                <tr className="text-left border-b border-gray-700 text-sm text-gray-400">
+          <div className="overflow-x-auto rounded-lg">
+            <table className="min-w-full text-sm bg-[#1e293b] border border-gray-700 rounded-lg">
+              <thead className="text-left bg-gray-800 text-gray-300 uppercase text-xs">
+                <tr>
                   <th className="px-4 py-3">Name</th>
                   <th className="px-4 py-3">Email</th>
                   <th className="px-4 py-3">Role</th>
@@ -91,11 +93,11 @@ const UserManagement = () => {
                 </tr>
               </thead>
               <tbody>
-                {users.map((u, i) => (
-                  <tr key={i} className="border-t border-gray-800 text-sm hover:bg-gray-800">
-                    <td className="px-4 py-2">{u.name || 'N/A'}</td>
+                {users.map((u, index) => (
+                  <tr key={index} className="border-t border-gray-700 hover:bg-gray-800 transition">
+                    <td className="px-4 py-2">{u.name || 'Unnamed'}</td>
                     <td className="px-4 py-2">{u.email}</td>
-                    <td className="px-4 py-2 capitalize">{u.role}</td>
+                    <td className="px-4 py-2 capitalize">{u.role || 'user'}</td>
                     <td className="px-4 py-2 flex items-center gap-2">
                       {u.status === 'banned' ? (
                         <>
@@ -109,18 +111,18 @@ const UserManagement = () => {
                         </>
                       )}
                     </td>
-                    <td className="px-4 py-2 flex gap-2">
+                    <td className="px-4 py-2">
                       {u.status === 'banned' ? (
                         <button
                           onClick={() => handleUnban(u.id)}
-                          className="bg-green-600 hover:bg-green-700 text-white text-xs px-3 py-1 rounded-md"
+                          className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-xs"
                         >
                           Unban
                         </button>
                       ) : (
                         <button
                           onClick={() => handleBan(u.id)}
-                          className="bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-1 rounded-md"
+                          className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs"
                         >
                           Ban
                         </button>
