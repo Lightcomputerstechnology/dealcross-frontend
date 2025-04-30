@@ -1,11 +1,12 @@
 // File: src/AppRoutes.jsx
+
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import SiteLayout from '@/layouts/SiteLayout';
+import LoadingFallback from '@/components/LoadingFallback';
 import useAuthRedirect from '@/hooks/useAuthRedirect';
 
-import LoadingFallback from '@/components/LoadingFallback';
-
+// Pages
 import LoginPage from '@/pages/LoginPage';
 import SignupPage from '@/pages/SignupPage';
 import LandingPage from '@/pages/LandingPage';
@@ -22,33 +23,21 @@ import DealsPage from '@/pages/DealsPage';
 import DealDetailsPage from '@/pages/DealDetailsPage';
 import StartDealPage from '@/pages/StartDealPage';
 import StartDealPairing from '@/pages/StartDealPairing';
+import ConfirmPairingPage from '@/pages/ConfirmPairingPage';
 import DealConfirmation from '@/pages/DealConfirmation';
 import DealTrackerPage from '@/pages/DealTrackerPage';
-import ConfirmPairingPage from '@/pages/ConfirmPairingPage';
 import WalletPage from '@/pages/WalletPage';
 import FundWalletPage from '@/pages/FundWalletPage';
 import TransactionHistory from '@/pages/TransactionHistory';
 import KYCStatusPage from '@/pages/KYCStatusPage';
 import WalletHistoryPage from '@/pages/WalletHistoryPage';
+import WalletHistory from '@/pages/WalletHistoryPage';
+import WalletSummary from '@/pages/WalletPage';
 
 import ShareTrading from '@/pages/ShareTrading';
 import ShareTradingTips from '@/pages/ShareTradingTips';
 import TradingChartPage from '@/pages/TradingChartPage';
 import LiveTradingChart from '@/pages/LiveTradingChart';
-
-import UserProfile from '@/pages/UserProfile';
-import SettingsPage from '@/pages/Settings';
-import KYCUploadPage from '@/pages/KYCUploadPage';
-import DisputeResolutionPage from '@/pages/DisputeResolutionPage';
-import ReferralProgram from '@/pages/ReferralProgram';
-import SecurityCenter from '@/pages/SecurityCenter';
-
-import BlogListPage from '@/pages/BlogListPage';
-import BlogPostPage from '@/pages/BlogPostPage';
-import WhyDealcrossBeats from '@/pages/WhyDealcrossBeats';
-import DisputeResolutionGuide from '@/pages/DisputeResolutionGuide';
-import FastPayoutsExplained from '@/pages/FastPayoutsExplained';
-import IntroToDealcross from '@/pages/IntroToDealcross';
 
 import AdminDashboard from '@/pages/AdminDashboard';
 import AdminAnalyticsPage from '@/pages/AdminAnalyticsPage';
@@ -85,17 +74,25 @@ import SystemLogsViewer from '@/pages/SystemLogsViewerPage';
 import ExchangeRatesViewer from '@/pages/ExchangeRatesViewerPage';
 import SubscriptionPlansManager from '@/pages/SubscriptionPlansManagerPage';
 
+import UserProfile from '@/pages/UserProfile';
+import EditUserProfilePage from '@/pages/UserProfileEditPage';
+import SettingsPage from '@/pages/Settings';
+import KYCUploadPage from '@/pages/KYCUploadPage';
+import DisputeResolutionPage from '@/pages/DisputeResolutionPage';
+import ReferralProgram from '@/pages/ReferralProgram';
+import SecurityCenter from '@/pages/SecurityCenter';
+import UserSettingsPage from '@/pages/UserSettingsPage';
+
+import BlogListPage from '@/pages/BlogListPage';
+import WhyDealcrossBeats from '@/pages/WhyDealcrossBeats';
+import DisputeResolutionGuide from '@/pages/DisputeResolutionGuide';
+import FastPayoutsExplained from '@/pages/FastPayoutsExplained';
+import IntroToDealcross from '@/pages/IntroToDealcross';
+
 import NotFound from '@/pages/NotFound';
 
-const ProtectedUserRoute = ({ children }) => {
-  useAuthRedirect();
-  return children;
-};
-
-const ProtectedAdminRoute = ({ children }) => {
-  useAuthRedirect({ adminOnly: true });
-  return children;
-};
+const ProtectedUserRoute = ({ children }) => { useAuthRedirect(); return children; };
+const ProtectedAdminRoute = ({ children }) => { useAuthRedirect({ adminOnly: true }); return children; };
 
 export default function AppRoutes() {
   return (
@@ -120,32 +117,35 @@ export default function AppRoutes() {
         <Route path="blog/dispute-guide" element={<DisputeResolutionGuide />} />
         <Route path="blog/fast-payouts" element={<FastPayoutsExplained />} />
         <Route path="blog/intro" element={<IntroToDealcross />} />
-        <Route path="blog/:slug" element={<BlogPostPage />} />
 
         {/* User Routes */}
-        <Route path="chat-support" element={<ProtectedUserRoute><ChatSupport /></ProtectedUserRoute>} />
         <Route path="deals" element={<ProtectedUserRoute><DealsPage /></ProtectedUserRoute>} />
         <Route path="deal/:id" element={<ProtectedUserRoute><DealDetailsPage /></ProtectedUserRoute>} />
         <Route path="start-deal" element={<ProtectedUserRoute><StartDealPage /></ProtectedUserRoute>} />
         <Route path="pair-deal" element={<ProtectedUserRoute><StartDealPairing /></ProtectedUserRoute>} />
+        <Route path="confirm-pairing" element={<ProtectedUserRoute><ConfirmPairingPage /></ProtectedUserRoute>} />
         <Route path="confirm-deal" element={<ProtectedUserRoute><DealConfirmation /></ProtectedUserRoute>} />
         <Route path="deal-tracker" element={<ProtectedUserRoute><DealTrackerPage /></ProtectedUserRoute>} />
-        <Route path="confirm-pairing" element={<ProtectedUserRoute><ConfirmPairingPage /></ProtectedUserRoute>} />
         <Route path="wallet" element={<ProtectedUserRoute><WalletPage /></ProtectedUserRoute>} />
         <Route path="fund-wallet" element={<ProtectedUserRoute><FundWalletPage /></ProtectedUserRoute>} />
         <Route path="transaction-history" element={<ProtectedUserRoute><TransactionHistory /></ProtectedUserRoute>} />
-        <Route path="kyc-status" element={<ProtectedUserRoute><KYCStatusPage /></ProtectedUserRoute>} />
         <Route path="wallet-history" element={<ProtectedUserRoute><WalletHistoryPage /></ProtectedUserRoute>} />
+        <Route path="kyc-status" element={<ProtectedUserRoute><KYCStatusPage /></ProtectedUserRoute>} />
+        <Route path="kyc-upload" element={<ProtectedUserRoute><KYCUploadPage /></ProtectedUserRoute>} />
+        <Route path="profile" element={<ProtectedUserRoute><UserProfile /></ProtectedUserRoute>} />
+        <Route path="profile/edit/:id" element={<ProtectedUserRoute><EditUserProfilePage /></ProtectedUserRoute>} />
+        <Route path="settings" element={<ProtectedUserRoute><SettingsPage /></ProtectedUserRoute>} />
+        <Route path="user-settings" element={<ProtectedUserRoute><UserSettingsPage /></ProtectedUserRoute>} />
+        <Route path="disputes" element={<ProtectedUserRoute><DisputeResolutionPage /></ProtectedUserRoute>} />
+        <Route path="referral" element={<ProtectedUserRoute><ReferralProgram /></ProtectedUserRoute>} />
+        <Route path="security" element={<ProtectedUserRoute><SecurityCenter /></ProtectedUserRoute>} />
+        <Route path="chat/:dealId" element={<ProtectedUserRoute><ChatSupport /></ProtectedUserRoute>} />
+
+        {/* Trading */}
         <Route path="share-trading" element={<ProtectedUserRoute><ShareTrading /></ProtectedUserRoute>} />
         <Route path="share-tips" element={<ProtectedUserRoute><ShareTradingTips /></ProtectedUserRoute>} />
         <Route path="trading-chart" element={<ProtectedUserRoute><TradingChartPage /></ProtectedUserRoute>} />
         <Route path="live-chart" element={<ProtectedUserRoute><LiveTradingChart /></ProtectedUserRoute>} />
-        <Route path="profile" element={<ProtectedUserRoute><UserProfile /></ProtectedUserRoute>} />
-        <Route path="settings" element={<ProtectedUserRoute><SettingsPage /></ProtectedUserRoute>} />
-        <Route path="kyc-upload" element={<ProtectedUserRoute><KYCUploadPage /></ProtectedUserRoute>} />
-        <Route path="disputes" element={<ProtectedUserRoute><DisputeResolutionPage /></ProtectedUserRoute>} />
-        <Route path="referral" element={<ProtectedUserRoute><ReferralProgram /></ProtectedUserRoute>} />
-        <Route path="security" element={<ProtectedUserRoute><SecurityCenter /></ProtectedUserRoute>} />
 
         {/* Admin Routes */}
         <Route path="admin-dashboard" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
@@ -159,7 +159,6 @@ export default function AppRoutes() {
         <Route path="pitch-deck" element={<ProtectedAdminRoute><PitchDeckViewer /></ProtectedAdminRoute>} />
         <Route path="escrow-tracker" element={<ProtectedAdminRoute><EscrowTracker /></ProtectedAdminRoute>} />
         <Route path="mobile-promo" element={<ProtectedAdminRoute><MobileAppPromo /></ProtectedAdminRoute>} />
-        <Route path="chat-support" element={<ProtectedAdminRoute><ChatSupport /></ProtectedAdminRoute>} />
         <Route path="ai-insight" element={<ProtectedAdminRoute><AIInsightCenter /></ProtectedAdminRoute>} />
         <Route path="admin-deals" element={<ProtectedAdminRoute><AdminDealLog /></ProtectedAdminRoute>} />
         <Route path="admin-charts" element={<ProtectedAdminRoute><AdminCharts /></ProtectedAdminRoute>} />
@@ -183,7 +182,7 @@ export default function AppRoutes() {
         <Route path="exchange-rates" element={<ProtectedAdminRoute><ExchangeRatesViewer /></ProtectedAdminRoute>} />
         <Route path="subscription-plans" element={<ProtectedAdminRoute><SubscriptionPlansManager /></ProtectedAdminRoute>} />
 
-        {/* 404 Fallback */}
+        {/* Fallback */}
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
