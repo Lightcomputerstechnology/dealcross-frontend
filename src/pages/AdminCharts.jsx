@@ -7,9 +7,9 @@ import {
 } from 'recharts';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import JSZip from 'jszip';
 import { getAdminChartData, getCurrentUser } from '@/api';
 import { toast } from 'react-hot-toast';
-import JSZip from 'jszip';
 
 const AdminCharts = () => {
   const [data, setData] = useState([]);
@@ -17,9 +17,18 @@ const AdminCharts = () => {
   const [isAdmin, setIsAdmin] = useState(null);
   const [loading, setLoading] = useState(false);
   const [timeframe, setTimeframe] = useState('7');
-  const [include, setInclude] = useState({ deals: true, users: true, kyc: true, disputes: true, volume: true });
+  const [include, setInclude] = useState({ deals: true, users: true });
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [countdown, setCountdown] = useState(30);
+
+  const transformChartData = (raw) => {
+    const grouped = {};
+    raw.forEach(({ label, type, value }) => {
+      if (!grouped[label]) grouped[label] = { label };
+      grouped[label][type] = value;
+    });
+    return Object.values(grouped);
+  };
 
   const fetchData = async () => {
     setLoading(true);
@@ -32,7 +41,7 @@ const AdminCharts = () => {
       }
       setIsAdmin(true);
       const result = await getAdminChartData(timeframe);
-      setData(result);
+      setData(transformChartData(result.data));
       setStatus(null);
     } catch (err) {
       setStatus('Failed to load admin data.');
@@ -54,10 +63,15 @@ const AdminCharts = () => {
     return () => { clearInterval(interval); clearInterval(timer); };
   }, [timeframe, autoRefresh]);
 
-  const downloadCSV = async () => {
-    const headers = Object.keys(data[0] || {}).join(',');
-    const rows = data.map(row => Object.values(row).join(',')).join('\n');
-    return `data:text/csv;charset=utf-8,${headers}\n${rows}`;
+  const downloadCSV = () => {
+    if (!data.length) return;
+    const keys = Object.keys(data[0]);
+    const csv = [keys.join(',')].concat(data.map(d => keys.map(k => d[k] || 0).join(','))).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'admin_chart_data.csv';
+    link.click();
   };
 
   const exportToPDF = async () => {
@@ -73,11 +87,12 @@ const AdminCharts = () => {
   };
 
   const downloadAll = async () => {
-    const csvURI = await downloadCSV();
     const pdfBlob = await exportToPDF();
     const zip = new JSZip();
-    zip.file('admin_chart_data.csv', await fetch(csvURI).then(res => res.text()));
     zip.file('admin_charts.pdf', pdfBlob);
+    const keys = Object.keys(data[0]);
+    const csv = [keys.join(',')].concat(data.map(d => keys.map(k => d[k] || 0).join(','))).join('\n');
+    zip.file('admin_chart_data.csv', csv);
     zip.generateAsync({ type: 'blob' }).then(content => {
       const link = document.createElement('a');
       link.href = URL.createObjectURL(content);
@@ -96,7 +111,7 @@ const AdminCharts = () => {
       <div className="min-h-screen bg-[#0f172a] text-white px-6 py-10">
         <div className="flex flex-wrap justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Admin Visual Analytics</h1>
-          <div className="flex gap-2 items-center mt-4 md:mt-0">
+          <div className="flex gap-2 items-center">
             <select value={timeframe} onChange={(e) => setTimeframe(e.target.value)} className="bg-gray-800 text-white px-3 py-2 rounded">
               <option value="7">Last 7 Days</option>
               <option value="30">Last 30 Days</option>
@@ -114,16 +129,7 @@ const AdminCharts = () => {
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-4 mb-8">
-          {['deals', 'users', 'kyc', 'disputes', 'volume'].map((key) => (
-            <label key={key} className="flex gap-2 items-center">
-              <input type="checkbox" checked={include[key]} onChange={() => setInclude({ ...include, [key]: !include[key] })} />
-              {key.charAt(0).toUpperCase() + key.slice(1)}
-            </label>
-          ))}
-        </div>
-
-        {isAdmin === false && <p className="text-red-400 font-medium text-center mt-6">Access Denied: This page is for admins only.</p>}
+        {isAdmin === false && <p className="text-red-400 font-medium text-center mt-6">Access Denied: Admins only.</p>}
         {status && isAdmin !== false && <p className="text-yellow-400">{status}</p>}
 
         {!status && isAdmin && (
@@ -166,3 +172,4 @@ const AdminCharts = () => {
 };
 
 export default AdminCharts;
+    
