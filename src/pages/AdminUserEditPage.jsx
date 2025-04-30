@@ -2,136 +2,164 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
 import axios from 'axios';
+import { Helmet } from 'react-helmet';
 import { toast } from 'react-hot-toast';
-import { FiUserCheck, FiUserX } from 'react-icons/fi';
+import { FiTrash, FiSave } from 'react-icons/fi';
 
 const AdminUserEditPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+
   const [user, setUser] = useState(null);
-  const [form, setForm] = useState({ username: '', email: '', is_active: true, is_admin: false });
+  const [form, setForm] = useState({ email: '', role: 'user', status: 'active', email_verified: false });
   const [loading, setLoading] = useState(true);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
-      const token = localStorage.getItem('token');
       try {
-        const response = await axios.get('https://d-final.onrender.com/user/admin/users', {
+        const token = localStorage.getItem('token');
+        const res = await axios.get(`https://d-final.onrender.com/admin/users/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        const found = response.data.find((u) => u.id === parseInt(id));
-        if (!found) {
-          toast.error('User not found.');
-          navigate('/admin');
-          return;
-        }
-        setUser(found);
+        setUser(res.data);
         setForm({
-          username: found.username || '',
-          email: found.email || '',
-          is_active: found.status === 'active',
-          is_admin: found.is_admin || false,
+          email: res.data.email,
+          role: res.data.role,
+          status: res.data.status,
+          email_verified: res.data.email_verified,
         });
-        setLoading(false);
       } catch (err) {
-        toast.error('Failed to load user.');
-        navigate('/admin');
+        toast.error('Failed to load user');
+        navigate('/admin/user-control');
+      } finally {
+        setLoading(false);
       }
     };
-
     fetchUser();
   }, [id, navigate]);
 
   const handleSave = async () => {
-    const token = localStorage.getItem('token');
     try {
-      const res = await axios.put(
-        `https://d-final.onrender.com/user/admin/update/${id}`,
-        form,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      toast.success('User updated successfully!');
-      navigate('/admin/user-control'); // Adjust this to your actual admin route
+      const token = localStorage.getItem('token');
+      await axios.put(`https://d-final.onrender.com/admin/users/${id}`, form, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      toast.success('User updated');
+      localStorage.setItem('user', JSON.stringify({ ...user, ...form }));
     } catch (err) {
-      toast.error(err.response?.data?.detail || 'Update failed.');
+      toast.error(err.response?.data?.detail || 'Update failed');
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex justify-center items-center text-white bg-[#0f172a]">
-        <p>Loading user data...</p>
-      </div>
-    );
-  }
+  const handleDelete = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`https://d-final.onrender.com/admin/users/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      toast.success('User deleted');
+      navigate('/admin/user-control');
+    } catch (err) {
+      toast.error(err.response?.data?.detail || 'Delete failed');
+    }
+  };
+
+  if (loading) return <p className="p-10">Loading...</p>;
 
   return (
-    <>
+    <div className="min-h-screen bg-[#0f172a] text-white px-6 py-10 max-w-2xl mx-auto">
       <Helmet>
-        <title>Edit User - Dealcross Admin</title>
-        <meta name="description" content="Edit user details as admin." />
+        <title>Edit User - Admin | Dealcross</title>
       </Helmet>
 
-      <div className="min-h-screen bg-[#0f172a] text-white px-6 py-10">
-        <div className="max-w-xl mx-auto bg-[#1e293b] p-6 rounded-xl shadow space-y-6">
-          <h2 className="text-2xl font-bold mb-2">Edit User</h2>
+      <h2 className="text-2xl font-bold mb-6">Edit User</h2>
 
+      <div className="space-y-4">
+        <div>
+          <label className="block text-sm mb-1">Email</label>
           <input
-            type="text"
-            value={form.username}
-            onChange={(e) => setForm({ ...form, username: e.target.value })}
-            className="w-full px-4 py-2 bg-gray-800 rounded border border-gray-700"
-            placeholder="Username"
-          />
-
-          <input
-            type="email"
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
-            className="w-full px-4 py-2 bg-gray-800 rounded border border-gray-700"
-            placeholder="Email"
+            className="w-full px-4 py-2 rounded bg-gray-800 text-white"
           />
-
-          <div className="flex items-center gap-3">
-            <input
-              type="checkbox"
-              checked={form.is_active}
-              onChange={(e) => setForm({ ...form, is_active: e.target.checked })}
-              className="accent-blue-600"
-            />
-            <label className="text-sm">Account Active</label>
-            {form.is_active ? <FiUserCheck className="text-green-400" /> : <FiUserX className="text-red-400" />}
-          </div>
-
-          <div className="flex items-center gap-3">
-            <input
-              type="checkbox"
-              checked={form.is_admin}
-              onChange={(e) => setForm({ ...form, is_admin: e.target.checked })}
-              className="accent-yellow-500"
-            />
-            <label className="text-sm">Grant Admin Privileges</label>
-          </div>
-
-          <div className="flex justify-end gap-4">
-            <button
-              onClick={() => navigate(-1)}
-              className="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleSave}
-              className="px-4 py-2 bg-green-600 hover:bg-green-700 rounded"
-            >
-              Save Changes
-            </button>
-          </div>
         </div>
+
+        <div>
+          <label className="block text-sm mb-1">Role</label>
+          <select
+            value={form.role}
+            onChange={(e) => setForm({ ...form, role: e.target.value })}
+            className="w-full px-4 py-2 rounded bg-gray-800 text-white"
+          >
+            <option value="user">User</option>
+            <option value="moderator">Moderator</option>
+            <option value="auditor">Auditor</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-sm mb-1">Status</label>
+          <select
+            value={form.status}
+            onChange={(e) => setForm({ ...form, status: e.target.value })}
+            className="w-full px-4 py-2 rounded bg-gray-800 text-white"
+          >
+            <option value="active">Active</option>
+            <option value="banned">Banned</option>
+          </select>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={form.email_verified}
+            onChange={(e) => setForm({ ...form, email_verified: e.target.checked })}
+          />
+          <label>Email Verified</label>
+        </div>
+
+        <div className="flex justify-between mt-6">
+          <button
+            onClick={() => setShowConfirm(true)}
+            className="flex items-center gap-2 bg-red-600 hover:bg-red-700 px-4 py-2 rounded"
+          >
+            <FiTrash /> Delete
+          </button>
+
+          <button
+            onClick={handleSave}
+            className="flex items-center gap-2 bg-green-600 hover:bg-green-700 px-4 py-2 rounded"
+          >
+            <FiSave /> Save
+          </button>
+        </div>
+
+        {showConfirm && (
+          <div className="fixed inset-0 bg-black/70 flex justify-center items-center z-50">
+            <div className="bg-[#1e293b] p-6 rounded-lg shadow max-w-sm w-full space-y-4">
+              <p className="text-lg font-semibold text-white">Confirm delete this user?</p>
+              <div className="flex justify-end gap-2">
+                <button
+                  onClick={() => setShowConfirm(false)}
+                  className="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDelete}
+                  className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded"
+                >
+                  Confirm Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-    </>
+    </div>
   );
 };
 
