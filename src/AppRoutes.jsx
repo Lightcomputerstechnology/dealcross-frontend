@@ -24,6 +24,7 @@ import StartDealPage from '@/pages/StartDealPage';
 import StartDealPairing from '@/pages/StartDealPairing';
 import DealConfirmation from '@/pages/DealConfirmation';
 import DealTrackerPage from '@/pages/DealTrackerPage';
+import ConfirmPairingPage from '@/pages/ConfirmPairingPage';
 import WalletPage from '@/pages/WalletPage';
 import FundWalletPage from '@/pages/FundWalletPage';
 import TransactionHistory from '@/pages/TransactionHistory';
@@ -129,6 +130,7 @@ export default function AppRoutes() {
         <Route path="pair-deal" element={<ProtectedUserRoute><StartDealPairing /></ProtectedUserRoute>} />
         <Route path="confirm-deal" element={<ProtectedUserRoute><DealConfirmation /></ProtectedUserRoute>} />
         <Route path="deal-tracker" element={<ProtectedUserRoute><DealTrackerPage /></ProtectedUserRoute>} />
+        <Route path="confirm-pairing" element={<ProtectedUserRoute><ConfirmPairingPage /></ProtectedUserRoute>} />
         <Route path="wallet" element={<ProtectedUserRoute><WalletPage /></ProtectedUserRoute>} />
         <Route path="fund-wallet" element={<ProtectedUserRoute><FundWalletPage /></ProtectedUserRoute>} />
         <Route path="transaction-history" element={<ProtectedUserRoute><TransactionHistory /></ProtectedUserRoute>} />
