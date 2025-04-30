@@ -12,6 +12,7 @@ const UserProfileEditPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useUser();
+
   const [form, setForm] = useState({ username: '', email: '', password: '' });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -45,7 +46,8 @@ const UserProfileEditPage = () => {
       if (parseInt(id) === user?.id) {
         localStorage.setItem('user', JSON.stringify({ ...user, ...form }));
       }
-      navigate('/profile');
+
+      navigate(id ? '/user-controls' : '/profile');
     } catch (err) {
       toast.error(err.message || 'Update failed.');
     } finally {
@@ -96,16 +98,27 @@ const UserProfileEditPage = () => {
                   name="password"
                   value={form.password}
                   onChange={handleChange}
+                  placeholder="Leave blank to keep current password"
                   className="w-full bg-gray-800 px-4 py-2 rounded"
                 />
               </div>
-              <button
-                type="submit"
-                disabled={saving}
-                className="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded font-semibold"
-              >
-                {saving ? 'Saving...' : 'Update Profile'}
-              </button>
+
+              <div className="flex justify-between gap-3">
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="bg-blue-600 px-6 py-2 rounded hover:bg-blue-700 font-semibold"
+                >
+                  {saving ? 'Saving...' : 'Update Profile'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => navigate(id ? '/user-controls' : '/profile')}
+                  className="bg-gray-600 px-6 py-2 rounded hover:bg-gray-700 font-semibold"
+                >
+                  Cancel
+                </button>
+              </div>
             </form>
           )}
         </div>
