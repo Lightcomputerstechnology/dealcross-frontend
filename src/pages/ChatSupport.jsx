@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet';
 import { FiSend } from 'react-icons/fi';
-import { useParams } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import {
   getDealMessages,
@@ -12,7 +12,10 @@ import {
 } from '@/api';
 
 const ChatSupport = () => {
-  const { dealId } = useParams(); // Assumes route is /chat/:dealId
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const dealId = queryParams.get('deal_id');
+
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(true);
@@ -42,6 +45,10 @@ const ChatSupport = () => {
   };
 
   useEffect(() => {
+    if (!dealId) {
+      toast.error('No deal selected.');
+      return;
+    }
     fetchMessages();
     markDealChatAsRead(dealId);
     const interval = setInterval(fetchMessages, 15000);
@@ -59,7 +66,9 @@ const ChatSupport = () => {
       </Helmet>
 
       <div className="min-h-screen bg-[#0f172a] text-white px-6 py-10 flex flex-col">
-        <h2 className="text-2xl font-bold mb-4">Chat for Deal #{dealId}</h2>
+        <h2 className="text-2xl font-bold mb-4">
+          {dealId ? `Chat for Deal #${dealId}` : 'Deal Chat'}
+        </h2>
 
         <div className="flex-1 overflow-y-auto bg-[#1e293b] rounded-lg p-4 mb-4 shadow-md">
           {loading ? (
