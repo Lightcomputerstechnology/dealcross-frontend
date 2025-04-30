@@ -1,7 +1,14 @@
+// File: src/pages/UpgradePage.jsx
+
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
+import {
+  upgradeSubscriptionCard,
+  upgradeSubscriptionBank,
+  upgradeSubscriptionCrypto,
+} from '@/api';
 
 const UpgradePage = () => {
   const [selectedPlan, setSelectedPlan] = useState('pro');
@@ -9,34 +16,25 @@ const UpgradePage = () => {
   const [processing, setProcessing] = useState(false);
   const navigate = useNavigate();
 
-  // Handle Plan Upgrade
   const handleUpgrade = async () => {
     setProcessing(true);
-    toast.loading('Processing payment...', { id: 'upgrade' });
+    toast.loading('Processing upgrade...', { id: 'upgrade' });
 
     try {
-      const token = localStorage.getItem('token');
-      const res = await fetch('https://d-final.onrender.com/users/upgrade-plan', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          plan: selectedPlan,
-          method: paymentMethod,
-        }),
-      });
+      let result;
 
-      const data = await res.json();
-      toast.dismiss('upgrade');
-
-      if (!res.ok) {
-        toast.error(data.detail || 'Upgrade failed.');
-        return;
+      if (paymentMethod === 'card') {
+        result = await upgradeSubscriptionCard(selectedPlan);
+      } else if (paymentMethod === 'bank' || paymentMethod === 'paystack' || paymentMethod === 'flutterwave') {
+        result = await upgradeSubscriptionBank(selectedPlan);
+      } else if (paymentMethod === 'bitcoin' || paymentMethod === 'usdt') {
+        result = await upgradeSubscriptionCrypto(selectedPlan, paymentMethod);
+      } else {
+        throw new Error('Unsupported payment method');
       }
 
-      toast.success(data.message || 'Account upgraded successfully!');
+      toast.dismiss('upgrade');
+      toast.success(result?.message || 'Account upgraded successfully!');
       navigate('/payment-status?status=success');
     } catch (err) {
       toast.dismiss('upgrade');
@@ -57,7 +55,6 @@ const UpgradePage = () => {
       <div className="min-h-screen bg-[#0f172a] text-white flex flex-col items-center px-4 py-12 space-y-8">
         <h1 className="text-3xl font-bold">Upgrade Your Account</h1>
 
-        {/* Plans */}
         <div className="grid md:grid-cols-2 gap-6 w-full max-w-4xl">
           {/* Pro Plan */}
           <div
@@ -103,6 +100,7 @@ const UpgradePage = () => {
             className="w-full px-4 py-2 rounded bg-gray-800 border border-gray-600"
           >
             <option value="card">Card (Stripe)</option>
+            <option value="bank">Bank Transfer</option>
             <option value="paystack">Paystack</option>
             <option value="flutterwave">Flutterwave</option>
             <option value="bitcoin">Bitcoin</option>
@@ -110,7 +108,7 @@ const UpgradePage = () => {
           </select>
         </div>
 
-        {/* Upgrade Button */}
+        {/* Submit Button */}
         <button
           onClick={handleUpgrade}
           disabled={processing}
