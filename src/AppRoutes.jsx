@@ -122,6 +122,7 @@ export default function AppRoutes() {
         <Route path="blog/:slug" element={<BlogPostPage />} />
 
         {/* User Routes */}
+        <Route path="chat-support" element={<ProtectedUserRoute><ChatSupport /></ProtectedUserRoute>} />
         <Route path="deals" element={<ProtectedUserRoute><DealsPage /></ProtectedUserRoute>} />
         <Route path="deal/:id" element={<ProtectedUserRoute><DealDetailsPage /></ProtectedUserRoute>} />
         <Route path="start-deal" element={<ProtectedUserRoute><StartDealPage /></ProtectedUserRoute>} />
