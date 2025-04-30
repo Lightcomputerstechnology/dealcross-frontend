@@ -1,21 +1,56 @@
 // File: src/pages/UserProfile.jsx
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
+import axios from 'axios';
+import { toast } from 'react-hot-toast';
 
 const UserProfile = () => {
   const [user, setUser] = useState(null);
+  const [form, setForm] = useState({ email: '', username: '' });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem('user');
     if (stored) {
-      setUser(JSON.parse(stored));
+      const parsed = JSON.parse(stored);
+      setUser(parsed);
+      setForm({ email: parsed.email, username: parsed.username });
     }
+    setLoading(false);
   }, []);
 
-  if (!user) {
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    const token = localStorage.getItem('token');
+
+    try {
+      const response = await axios.put(
+        'https://d-final.onrender.com/users/update-profile',
+        { email: form.email, username: form.username },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      toast.success('Profile updated!');
+      const updatedUser = { ...user, email: form.email, username: form.username };
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      setUser(updatedUser);
+    } catch (err) {
+      toast.error(err.response?.data?.detail || 'Failed to update profile.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading || !user) {
     return (
       <div className="min-h-screen bg-[#0f172a] text-white flex justify-center items-center">
-        <p>Loading user profile...</p>
+        <p>Loading profile...</p>
       </div>
     );
   }
@@ -24,45 +59,48 @@ const UserProfile = () => {
     <>
       <Helmet>
         <title>User Profile - Dealcross</title>
-        <meta name="description" content="View and manage your Dealcross profile." />
+        <meta name="description" content="Edit and manage your user profile on Dealcross." />
       </Helmet>
 
       <div className="min-h-screen bg-[#0f172a] text-white px-6 py-10">
         <div className="max-w-3xl mx-auto bg-[#1e293b] p-6 rounded-lg shadow-md">
-          {/* Avatar + Basic Info */}
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-16 h-16 rounded-full bg-gray-700 flex items-center justify-center text-2xl font-bold">
-              {user.username?.charAt(0).toUpperCase()}
-            </div>
+          <h2 className="text-2xl font-bold mb-6">Your Profile</h2>
+
+          <form onSubmit={handleUpdate} className="space-y-6">
             <div>
-              <h2 className="text-xl font-semibold">{user.username}</h2>
-              <span className="inline-block mt-1 px-2 py-0.5 text-xs bg-green-600 rounded-full">
-                Verified User
-              </span>
+              <label className="block mb-1 text-sm text-gray-400">Username</label>
+              <input
+                type="text"
+                name="username"
+                value={form.username}
+                onChange={handleChange}
+                className="w-full px-4 py-2 rounded bg-gray-800 text-white border border-gray-600"
+              />
             </div>
-          </div>
 
-          {/* Details */}
-          <div className="space-y-4 text-sm">
-            <div className="flex justify-between border-b border-gray-700 pb-2">
-              <span className="text-gray-400">Email:</span>
-              <span>{user.email}</span>
+            <div>
+              <label className="block mb-1 text-sm text-gray-400">Email</label>
+              <input
+                type="email"
+                name="email"
+                value={form.email}
+                onChange={handleChange}
+                className="w-full px-4 py-2 rounded bg-gray-800 text-white border border-gray-600"
+              />
             </div>
-            <div className="flex justify-between border-b border-gray-700 pb-2">
-              <span className="text-gray-400">Role:</span>
-              <span className="capitalize">{user.role}</span>
-            </div>
-            <div className="flex justify-between border-b border-gray-700 pb-2">
-              <span className="text-gray-400">Joined:</span>
-              <span>{new Date(user.created_at).toLocaleDateString()}</span>
-            </div>
-          </div>
 
-          <div className="mt-6 text-right">
-            <button className="bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-md font-medium">
-              Edit Profile
-            </button>
-          </div>
+            <div className="text-right">
+              <button
+                type="submit"
+                disabled={saving}
+                className={`px-6 py-2 rounded font-semibold ${
+                  saving ? 'bg-gray-600' : 'bg-blue-600 hover:bg-blue-700'
+                }`}
+              >
+                {saving ? 'Updating...' : 'Save Changes'}
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </>
