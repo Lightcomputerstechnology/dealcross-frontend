@@ -1,24 +1,24 @@
 // File: src/pages/AnalyticsDashboard.jsx
 
-import React, { useEffect, useState, useRef } from 'react';
-import axios from 'axios';
+import React, { useEffect, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { getChartData } from '@/api';
 import AdminCharts from '@/components/admin/AdminCharts';
 
-const AnalyticsDashboard = () => {
-  const [metrics, setMetrics] = useState([]);
+export default function AnalyticsDashboard() {
+  const [chartPoints, setChartPoints] = useState([]);
   const [loading, setLoading] = useState(true);
   const chartRef = useRef(null);
 
-  const fetchMetrics = async () => {
+  const fetchChart = async () => {
     try {
-      const response = await axios.get('https://d-final.onrender.com/admin/metrics');
-      setMetrics(response.data || []);
-      setLoading(false);
+      const result = await getChartData();
+      setChartPoints(result.data || []);
     } catch (err) {
-      console.error('Failed to fetch metrics:', err);
+      console.error('Failed to load chart:', err.message);
+    } finally {
       setLoading(false);
     }
   };
@@ -35,8 +35,8 @@ const AnalyticsDashboard = () => {
   };
 
   useEffect(() => {
-    fetchMetrics();
-    const interval = setInterval(fetchMetrics, 20000);
+    fetchChart();
+    const interval = setInterval(fetchChart, 20000);
     return () => clearInterval(interval);
   }, []);
 
@@ -61,11 +61,9 @@ const AnalyticsDashboard = () => {
         {loading ? (
           <p className="text-yellow-400">Loading metrics...</p>
         ) : (
-          <AdminCharts metrics={metrics} />
+          <AdminCharts metrics={chartPoints} />
         )}
       </div>
     </div>
   );
-};
-
-export default AnalyticsDashboard;
+    }
