@@ -1,15 +1,41 @@
-/* File: src/index.css */
+// File: tailwind.config.js
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+const plugin = require('tailwindcss/plugin');
 
-/* Global style tweaks */
-html, body {
-  @apply bg-slate-50 dark:bg-[#0b1822] text-slate-900 dark:text-slate-100;
-}
-
-/* Smooth transitions for theme switch */
-body {
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
+module.exports = {
+  content: [
+    './index.html',
+    './src/**/*.{js,jsx,ts,tsx}',
+  ],
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        primary: '#2563eb',
+        dark: '#0f172a',
+        light: '#f1f5f9',
+      },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+      },
+      animation: {
+        fade: 'fadeIn 0.8s ease-in-out',
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+      },
+    },
+  },
+  plugins: [
+    require('@tailwindcss/forms'),        // Better form input styling
+    require('@tailwindcss/aspect-ratio'), // Utility for aspect ratios
+    require('@tailwindcss/line-clamp'),   // Truncating text
+    plugin(function ({ addVariant }) {
+      addVariant('child', '& > *');
+      addVariant('child-hover', '& > *:hover');
+    }),
+  ],
+};
