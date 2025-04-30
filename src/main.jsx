@@ -3,12 +3,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
+
 import AppRoutes from './AppRoutes.jsx';
 import { NotificationProvider } from './context/NotificationContext.jsx';
 import { UserProvider } from './context/UserContext.jsx';
+
 import NotificationAlert from './components/NotificationAlert.jsx';
 import './index.css'; // Tailwind and global styles
 
+// Root mount point
 const root = document.getElementById('root');
 
 if (root) {
@@ -30,7 +33,7 @@ if (root) {
   console.error("Root element not found. Ensure index.html contains <div id='root'></div>");
 }
 
-// Inject fade-in animation if not handled by Tailwind plugin
+// Inject animation fallback if Tailwind plugin is not used
 const style = document.createElement('style');
 style.innerHTML = `
   .animate-fade-in {
