@@ -1,29 +1,36 @@
-// File: src/pages/UserSettingsPage.jsx
-
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { getUserSettings, updateProfile } from '@/api/optional';
+import { getUserSettings, getCurrentUser, updateProfile } from '@/api';
 import { toast } from 'react-hot-toast';
 
-const UserSettingsPage = () => {
+export default function UserSettingsPage() {
+  const [user, setUser] = useState(null);
   const [settings, setSettings] = useState(null);
   const [form, setForm] = useState({ username: '', email: '', password: '' });
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
 
   useEffect(() => {
-    const fetchSettings = async () => {
+    const fetchData = async () => {
       try {
-        const data = await getUserSettings();
-        setSettings(data);
-        setForm({ username: data.username || '', email: data.email || '', password: '' });
+        const userInfo = await getCurrentUser();
+        const settingInfo = await getUserSettings();
+
+        setUser(userInfo);
+        setSettings(settingInfo);
+
+        setForm({
+          username: userInfo.username || '',
+          email: userInfo.email || '',
+          password: '',
+        });
       } catch (err) {
         toast.error('Failed to load settings.');
       } finally {
         setLoading(false);
       }
     };
-    fetchSettings();
+    fetchData();
   }, []);
 
   const handleChange = (e) => {
@@ -36,10 +43,10 @@ const UserSettingsPage = () => {
     setUpdating(true);
     try {
       const updated = await updateProfile(form);
-      toast.success('Profile updated successfully');
       localStorage.setItem('user', JSON.stringify(updated));
+      toast.success('Profile updated');
     } catch (err) {
-      toast.error(err.message);
+      toast.error(err.message || 'Update failed.');
     } finally {
       setUpdating(false);
     }
@@ -50,6 +57,7 @@ const UserSettingsPage = () => {
       <Helmet>
         <title>User Settings - Dealcross</title>
       </Helmet>
+
       <div className="max-w-2xl mx-auto bg-[#1e293b] p-8 rounded-xl shadow space-y-6">
         <h2 className="text-2xl font-bold">Account Settings</h2>
 
@@ -106,7 +114,9 @@ const UserSettingsPage = () => {
                 <h4 className="text-lg font-semibold mb-2">Your Fee Tier: {settings.tier}</h4>
                 <ul className="space-y-1 list-disc pl-5">
                   {Object.entries(settings.fee_rates).map(([key, val]) => (
-                    <li key={key}>{key.replace(/_/g, ' ')}: {val}</li>
+                    <li key={key}>
+                      {key.replace(/_/g, ' ')}: {val}
+                    </li>
                   ))}
                 </ul>
               </div>
@@ -116,6 +126,4 @@ const UserSettingsPage = () => {
       </div>
     </div>
   );
-};
-
-export default UserSettingsPage;
+}
