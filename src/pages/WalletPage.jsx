@@ -1,7 +1,9 @@
+// File: src/pages/WalletPage.jsx
+
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
-import { getWalletSummary } from '@/api';  // ✅ Corrected import
+import { getWalletSummary } from '@/api';  // ✅ Confirmed API function
 import { toast } from 'react-hot-toast';
 import useAuthRedirect from '@/hooks/useAuthRedirect';
 import { FiAlertCircle } from 'react-icons/fi';
@@ -17,8 +19,8 @@ const WalletPage = () => {
     const fetchWallet = async () => {
       try {
         const data = await getWalletSummary();
-        setBalance(data.wallet?.balance || 0);
-        setRecent(data.recent_transactions || []);
+        setBalance(data?.wallet?.balance || 0);
+        setRecent(data?.recent_transactions || []);
         setStatus(null);
       } catch (err) {
         const msg = err.message || 'Unable to fetch wallet data.';
@@ -33,6 +35,7 @@ const WalletPage = () => {
     <>
       <Helmet>
         <title>Wallet - Dealcross</title>
+        <meta name="description" content="View your wallet balance and recent transactions on Dealcross." />
       </Helmet>
 
       <div className="min-h-screen bg-[#0f172a] text-white px-4 py-10">
@@ -68,8 +71,8 @@ const WalletPage = () => {
                     key={index}
                     className="flex justify-between border-b border-gray-600 py-2"
                   >
-                    <span>{tx.type?.toUpperCase() || 'UNKNOWN'}</span>
-                    <span>${Number(tx.amount).toFixed(2)}</span>
+                    <span className="capitalize">{tx?.type || 'Unknown'}</span>
+                    <span>${Number(tx?.amount || 0).toFixed(2)}</span>
                   </li>
                 ))}
               </ul>
