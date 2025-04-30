@@ -1,109 +1,97 @@
 // File: src/pages/UserProfile.jsx
 import React, { useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
 import axios from 'axios';
+import { Helmet } from 'react-helmet';
 import { toast } from 'react-hot-toast';
 
 const UserProfile = () => {
-  const [user, setUser] = useState(null);
-  const [form, setForm] = useState({ email: '', username: '' });
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
+  const [form, setForm] = useState({ username: '', email: '', password: '' });
+  const [status, setStatus] = useState(null);
 
   useEffect(() => {
-    const stored = localStorage.getItem('user');
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      setUser(parsed);
-      setForm({ email: parsed.email, username: parsed.username });
-    }
-    setLoading(false);
-  }, []);
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await axios.get('https://d-final.onrender.com/user/profile', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setForm({ username: res.data.username, email: res.data.email, password: '' });
+      } catch (err) {
+        toast.error('Failed to load profile.');
+      }
+    };
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+    fetchProfile();
+  }, []);
 
   const handleUpdate = async (e) => {
     e.preventDefault();
-    setSaving(true);
-    const token = localStorage.getItem('token');
-
+    setStatus(null);
     try {
-      const response = await axios.put(
-        'https://d-final.onrender.com/users/update-profile',
-        { email: form.email, username: form.username },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
-      toast.success('Profile updated!');
-      const updatedUser = { ...user, email: form.email, username: form.username };
-      localStorage.setItem('user', JSON.stringify(updatedUser));
-      setUser(updatedUser);
+      const token = localStorage.getItem('token');
+      const res = await axios.put('https://d-final.onrender.com/user/profile/update', form, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      toast.success('Profile updated successfully');
+      setForm({ ...form, password: '' });
     } catch (err) {
-      toast.error(err.response?.data?.detail || 'Failed to update profile.');
-    } finally {
-      setSaving(false);
+      toast.error(err.response?.data?.detail || 'Update failed.');
     }
   };
 
-  if (loading || !user) {
-    return (
-      <div className="min-h-screen bg-[#0f172a] text-white flex justify-center items-center">
-        <p>Loading profile...</p>
-      </div>
-    );
-  }
-
   return (
-    <>
+    <div className="min-h-screen bg-[#0f172a] text-white px-6 py-10">
       <Helmet>
         <title>User Profile - Dealcross</title>
-        <meta name="description" content="Edit and manage your user profile on Dealcross." />
       </Helmet>
 
-      <div className="min-h-screen bg-[#0f172a] text-white px-6 py-10">
-        <div className="max-w-3xl mx-auto bg-[#1e293b] p-6 rounded-lg shadow-md">
-          <h2 className="text-2xl font-bold mb-6">Your Profile</h2>
+      <div className="max-w-xl mx-auto bg-[#1e293b] p-6 rounded-lg shadow-md space-y-6">
+        <h2 className="text-xl font-bold text-center">My Profile</h2>
+        <form onSubmit={handleUpdate} className="space-y-4">
+          <div>
+            <label className="block text-sm mb-1">Username</label>
+            <input
+              type="text"
+              value={form.username}
+              onChange={(e) => setForm({ ...form, username: e.target.value })}
+              className="w-full px-4 py-2 rounded bg-gray-800 text-white border border-gray-600"
+              required
+            />
+          </div>
 
-          <form onSubmit={handleUpdate} className="space-y-6">
-            <div>
-              <label className="block mb-1 text-sm text-gray-400">Username</label>
-              <input
-                type="text"
-                name="username"
-                value={form.username}
-                onChange={handleChange}
-                className="w-full px-4 py-2 rounded bg-gray-800 text-white border border-gray-600"
-              />
-            </div>
+          <div>
+            <label className="block text-sm mb-1">Email</label>
+            <input
+              type="email"
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              className="w-full px-4 py-2 rounded bg-gray-800 text-white border border-gray-600"
+              required
+            />
+          </div>
 
-            <div>
-              <label className="block mb-1 text-sm text-gray-400">Email</label>
-              <input
-                type="email"
-                name="email"
-                value={form.email}
-                onChange={handleChange}
-                className="w-full px-4 py-2 rounded bg-gray-800 text-white border border-gray-600"
-              />
-            </div>
+          <div>
+            <label className="block text-sm mb-1">New Password (optional)</label>
+            <input
+              type="password"
+              value={form.password}
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
+              className="w-full px-4 py-2 rounded bg-gray-800 text-white border border-gray-600"
+              placeholder="Leave blank to keep current password"
+            />
+          </div>
 
-            <div className="text-right">
-              <button
-                type="submit"
-                disabled={saving}
-                className={`px-6 py-2 rounded font-semibold ${
-                  saving ? 'bg-gray-600' : 'bg-blue-600 hover:bg-blue-700'
-                }`}
-              >
-                {saving ? 'Updating...' : 'Save Changes'}
-              </button>
-            </div>
-          </form>
-        </div>
+          <button
+            type="submit"
+            className="w-full py-2 bg-blue-600 hover:bg-blue-700 rounded font-semibold"
+          >
+            Update Profile
+          </button>
+
+          {status && <p className="text-yellow-400 text-center">{status}</p>}
+        </form>
       </div>
-    </>
+    </div>
   );
 };
 
