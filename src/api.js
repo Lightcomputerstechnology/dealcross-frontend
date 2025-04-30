@@ -337,6 +337,47 @@ export const getShareTradingTips = async () => {
 };
 
 //
+// ========== CHAT SUPPORT ==========
+export const getChatMessages = async (dealId) => {
+  try {
+    const res = await API.get(`/chat/messages?deal_id=${dealId}`);
+    return res.data;
+  } catch (err) {
+    handleError(err);
+  }
+};
+
+export const sendMessage = async (dealId, message) => {
+  try {
+    const res = await API.post('/chat/send', {
+      deal_id: dealId,
+      message: message,
+    });
+    return res.data;
+  } catch (err) {
+    handleError(err);
+  }
+};
+
+export const markMessagesAsRead = async (dealId) => {
+  try {
+    const res = await API.post(`/chat/mark-read`, { deal_id: dealId });
+    return res.data;
+  } catch (err) {
+    handleError(err);
+  }
+};
+
+export const getUnreadMessageCount = async () => {
+  try {
+    const res = await API.get('/chat/unread-count');
+    return res.data;
+  } catch (err) {
+    handleError(err);
+  }
+};
+
+//
 // ========== BLOG ==========
 export const getBlogPosts = async () => {
   try {
