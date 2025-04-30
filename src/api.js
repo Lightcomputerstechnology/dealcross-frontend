@@ -304,6 +304,27 @@ export const getAdminChartData = async () => {
 };
 
 //
+// ========== ADMIN CHAT THREADS ==========
+export const getAllChatThreads = async () => {
+  try {
+    const res = await API.get('/admin/chat/threads');
+    return res.data;
+  } catch (err) {
+    handleError(err);
+  }
+};
+
+export const getThreadMessages = async (threadId) => {
+  try {
+    const res = await API.get(`/admin/chat/threads/${threadId}`);
+    return res.data;
+  } catch (err) {
+    handleError(err);
+  }
+};
+
+
+//
 // ========== INVESTOR ==========
 export const getInvestorReports = async () => {
   try {
