@@ -1,9 +1,12 @@
+// File: src/pages/UserControlList.jsx
+
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import axios from 'axios';
 import { FiUser, FiRefreshCw, FiDownload, FiShield, FiSlash } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 const roles = ['user', 'moderator', 'auditor', 'admin'];
 
@@ -12,6 +15,7 @@ const UserControlList = () => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [filter, setFilter] = useState('');
+  const navigate = useNavigate();
 
   const fetchUsers = async () => {
     setRefreshing(true);
@@ -58,9 +62,9 @@ const UserControlList = () => {
 
   const exportCSV = () => {
     const headers = ['ID', 'Username', 'Email', 'Role', 'Status', 'Created At'];
-    const rows = users.map(u =>
-      [u.id, u.username, u.email, u.role, u.status, new Date(u.created_at).toLocaleString()]
-    );
+    const rows = users.map(u => [
+      u.id, u.username, u.email, u.role, u.status, new Date(u.created_at).toLocaleString()
+    ]);
     const csvContent = [headers, ...rows].map(e => e.join(',')).join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const link = document.createElement('a');
@@ -135,7 +139,7 @@ const UserControlList = () => {
                   <p className="text-sm text-gray-400">{user.email}</p>
                   <p className="text-xs text-gray-500">Role: {user.role} | Status: {user.status}</p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-wrap">
                   <select
                     value={user.role}
                     onChange={(e) => handleRoleChange(user.id, e.target.value)}
@@ -145,6 +149,14 @@ const UserControlList = () => {
                       <option key={role} value={role}>{role}</option>
                     ))}
                   </select>
+
+                  <button
+                    onClick={() => navigate(`/admin/edit-user/${user.id}`)}
+                    className="px-3 py-1 text-xs bg-blue-600 hover:bg-blue-700 text-white rounded"
+                  >
+                    Edit
+                  </button>
+
                   {user.status === 'active' ? (
                     <button
                       onClick={() => handleBanToggle(user.id, 'ban')}
