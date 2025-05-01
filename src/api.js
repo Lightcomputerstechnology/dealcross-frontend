@@ -505,4 +505,15 @@ export const approveDealById = async (dealId) => {
   }
 };
 
+
+// Fetch chat messages for a specific deal
+export const getDealMessages = async (dealId) => {
+  try {
+    const res = await API.get(`/chat/messages?deal_id=${dealId}`);
+    return res.data;
+  } catch (err) {
+    handleError(err);
+  }
+};
+
 export default API;
