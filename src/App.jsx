@@ -9,7 +9,7 @@ import { Toaster } from 'react-hot-toast';
 import Navbar from './components/Navbar.jsx';
 import Footer from './components/Footer.jsx';
 import FloatingChatButton from './components/FloatingChatButton.jsx';
-import NotificationAlert from './components/NotificationAlert.jsx';
+import NotificationAlert from './components/common/NotificationAlert.jsx';
 import NotificationPopUp from './components/NotificationPopUp.jsx';
 
 // Context Providers
