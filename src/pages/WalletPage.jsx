@@ -3,10 +3,10 @@
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
-import { getWalletSummary } from '@/api';  // ✅ Confirmed API function
 import { toast } from 'react-hot-toast';
+import { getWalletSummary } from '@/api';
 import useAuthRedirect from '@/hooks/useAuthRedirect';
-import { FiAlertCircle } from 'react-icons/fi';
+import { FiAlertCircle, FiArrowDownCircle, FiArrowUpCircle } from 'react-icons/fi';
 
 const WalletPage = () => {
   useAuthRedirect();
@@ -28,6 +28,7 @@ const WalletPage = () => {
         toast.error(msg);
       }
     };
+
     fetchWallet();
   }, []);
 
@@ -35,51 +36,66 @@ const WalletPage = () => {
     <>
       <Helmet>
         <title>Wallet - Dealcross</title>
-        <meta name="description" content="View your wallet balance and recent transactions on Dealcross." />
+        <meta name="description" content="Check your Dealcross wallet balance and transactions." />
       </Helmet>
 
-      <div className="min-h-screen bg-[#0f172a] text-white px-4 py-10">
-        <h2 className="text-2xl font-bold mb-6 text-center">Wallet</h2>
+      <section className="min-h-screen bg-[#0f172a] text-white px-6 py-10">
+        <div className="max-w-3xl mx-auto space-y-6">
+          <h1 className="text-3xl font-bold text-center">My Wallet</h1>
 
-        <div className="bg-[#1e293b] p-6 rounded-lg shadow space-y-4">
-          {balance !== null ? (
-            <>
-              <p className="text-sm text-gray-400">Available Balance</p>
-              <h1 className="text-4xl font-bold">USD {balance.toFixed(2)}</h1>
-            </>
-          ) : (
-            <div className="flex items-center gap-2">
-              <FiAlertCircle className="text-yellow-400 text-xl animate-pulse" />
-              <p className="text-yellow-400">{status}</p>
+          <div className="bg-[#1e293b] rounded-xl p-6 shadow-md">
+            {balance !== null ? (
+              <>
+                <p className="text-sm text-gray-400">Available Balance</p>
+                <h2 className="text-4xl font-extrabold mt-2">USD {balance.toFixed(2)}</h2>
+              </>
+            ) : (
+              <div className="flex items-center gap-2 text-yellow-400">
+                <FiAlertCircle className="text-xl animate-pulse" />
+                <p>{status}</p>
+              </div>
+            )}
+
+            <div className="mt-6 flex gap-4">
+              <Link to="/fund-wallet">
+                <button className="bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-md font-semibold transition">
+                  Fund Wallet
+                </button>
+              </Link>
+              <Link to="/wallet-history">
+                <button className="bg-gray-700 hover:bg-gray-600 px-5 py-2 rounded-md font-semibold transition">
+                  View History
+                </button>
+              </Link>
             </div>
-          )}
-
-          <div className="flex flex-wrap gap-3 mt-6">
-            <Link to="/fund-wallet">
-              <button className="bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-md">
-                Fund Wallet
-              </button>
-            </Link>
           </div>
 
           {recent.length > 0 && (
-            <div className="mt-8">
-              <h3 className="text-lg font-semibold mb-2">Recent Transactions</h3>
-              <ul className="space-y-2">
-                {recent.map((tx, index) => (
-                  <li
-                    key={index}
-                    className="flex justify-between border-b border-gray-600 py-2"
-                  >
-                    <span className="capitalize">{tx?.type || 'Unknown'}</span>
-                    <span>${Number(tx?.amount || 0).toFixed(2)}</span>
+            <div className="bg-[#1e293b] mt-6 p-5 rounded-xl shadow-md">
+              <h3 className="text-xl font-semibold mb-4">Recent Transactions</h3>
+              <ul className="space-y-3 divide-y divide-gray-600">
+                {recent.map((tx, idx) => (
+                  <li key={idx} className="flex justify-between items-center py-2 text-sm">
+                    <div className="flex items-center gap-2 capitalize">
+                      {tx.type === 'credit' ? (
+                        <FiArrowDownCircle className="text-green-400" />
+                      ) : (
+                        <FiArrowUpCircle className="text-red-400" />
+                      )}
+                      {tx.type || 'N/A'}
+                    </div>
+                    <span className="font-mono text-right">${Number(tx.amount || 0).toFixed(2)}</span>
                   </li>
                 ))}
               </ul>
             </div>
           )}
+
+          {recent.length === 0 && balance !== null && (
+            <p className="text-center text-sm text-gray-400 mt-6">No recent transactions found.</p>
+          )}
         </div>
-      </div>
+      </section>
     </>
   );
 };
