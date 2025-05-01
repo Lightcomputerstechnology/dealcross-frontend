@@ -4,14 +4,14 @@ import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getCurrentUser, updateProfile } from '@/api';
-import { getUserDetail } from '@/api/optional';
+import { getCurrentUser } from '@/api';
 import { toast } from 'react-hot-toast';
 import { useUser } from '@/context/UserContext';
 
 const UserProfileEditPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user } = useUser();
+  const user = await getCurrentUser();
 
   const [form, setForm] = useState({ username: '', email: '', password: '' });
   const [loading, setLoading] = useState(true);
