@@ -2,7 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { toast } from 'react-hot-toast';
-import { getCurrentUser, updateProfile, verifyEmail } from '@/api';
+import { getCurrentUser, updateProfile } from '@/api';
+import { verifyEmail } from '@/api/optional';
 
 export default function UserProfile() {
   const [profile, setProfile] = useState(null);
