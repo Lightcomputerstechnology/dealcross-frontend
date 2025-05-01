@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { toast } from 'react-hot-toast';
 import { getCurrentUser, updateProfile } from '@/api';
-import { verifyEmail } from '@/api/optional';
+import { requestEmailVerification } from '@/api/optional';
 
 export default function UserProfile() {
   const [profile, setProfile] = useState(null);
@@ -43,7 +43,7 @@ export default function UserProfile() {
   const handleEmailVerify = async () => {
     try {
       setVerifying(true);
-      const result = await verifyEmail();
+      const result = await requestEmailVerification();
       toast.success(result?.message || 'Verification email sent!');
     } catch (err) {
       toast.error(err.message || 'Verification request failed.');
@@ -70,13 +70,9 @@ export default function UserProfile() {
               <p className="flex items-center gap-2">
                 <strong>Email:</strong> {profile?.email}
                 {profile?.email_verified ? (
-                  <span className="text-green-400 text-sm bg-green-900 px-2 py-0.5 rounded">
-                    Verified
-                  </span>
+                  <span className="text-green-400 text-sm bg-green-900 px-2 py-0.5 rounded">Verified</span>
                 ) : (
-                  <span className="text-yellow-400 text-sm bg-yellow-900 px-2 py-0.5 rounded">
-                    Unverified
-                  </span>
+                  <span className="text-yellow-400 text-sm bg-yellow-900 px-2 py-0.5 rounded">Unverified</span>
                 )}
               </p>
 
