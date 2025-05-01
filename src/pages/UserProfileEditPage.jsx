@@ -1,57 +1,40 @@
 // File: src/pages/UserProfileEditPage.jsx
 
 import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { useParams, useNavigate } from 'react-router-dom';
-import { getCurrentUser, updateProfile } from '@/api';
-import { getCurrentUser } from '@/api';
 import { toast } from 'react-hot-toast';
-import { useUser } from '@/context/UserContext';
+import { getCurrentUser, updateProfile } from '@/api';
 
-const UserProfileEditPage = () => {
-  const { id } = useParams();
+export default function UserProfileEditPage() {
   const navigate = useNavigate();
-  const user = await getCurrentUser();
+  const { id } = useParams();
 
   const [form, setForm] = useState({ username: '', email: '', password: '' });
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    const fetchProfile = async () => {
+    const fetchUser = async () => {
       try {
-        const data = id ? await getUserDetail(id) : await getCurrentUser();
-        setForm({ username: data.username, email: data.email, password: '' });
+        const user = await getCurrentUser();
+        setForm({ username: user.username, email: user.email, password: '' });
       } catch (err) {
-        toast.error('Failed to load user profile.');
+        toast.error('Failed to fetch user.');
       } finally {
         setLoading(false);
       }
     };
-    fetchProfile();
-  }, [id]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
+    fetchUser();
+  }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSaving(true);
+  const handleUpdate = async () => {
     try {
-      const updated = await updateProfile(form);
+      await updateProfile(form);
       toast.success('Profile updated!');
-
-      if (parseInt(id) === user?.id) {
-        localStorage.setItem('user', JSON.stringify({ ...user, ...form }));
-      }
-
-      navigate(id ? '/user-controls' : '/profile');
+      navigate('/profile');
     } catch (err) {
       toast.error(err.message || 'Update failed.');
-    } finally {
-      setSaving(false);
     }
   };
 
@@ -62,69 +45,52 @@ const UserProfileEditPage = () => {
       </Helmet>
 
       <div className="min-h-screen bg-[#0f172a] text-white px-6 py-10">
-        <div className="max-w-lg mx-auto bg-[#1e293b] p-6 rounded shadow">
-          <h1 className="text-2xl font-bold mb-6">Edit Profile</h1>
+        <div className="max-w-xl mx-auto bg-[#1e293b] p-6 rounded-xl shadow space-y-4">
+          <h1 className="text-2xl font-bold">Edit My Profile</h1>
 
           {loading ? (
             <p className="text-yellow-400">Loading...</p>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block mb-1 text-sm">Username</label>
-                <input
-                  type="text"
-                  name="username"
-                  value={form.username}
-                  onChange={handleChange}
-                  required
-                  className="w-full bg-gray-800 px-4 py-2 rounded"
-                />
-              </div>
-              <div>
-                <label className="block mb-1 text-sm">Email</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={form.email}
-                  onChange={handleChange}
-                  required
-                  className="w-full bg-gray-800 px-4 py-2 rounded"
-                />
-              </div>
-              <div>
-                <label className="block mb-1 text-sm">New Password</label>
-                <input
-                  type="password"
-                  name="password"
-                  value={form.password}
-                  onChange={handleChange}
-                  placeholder="Leave blank to keep current password"
-                  className="w-full bg-gray-800 px-4 py-2 rounded"
-                />
-              </div>
-
-              <div className="flex justify-between gap-3">
+            <>
+              <input
+                type="text"
+                value={form.username}
+                onChange={(e) => setForm({ ...form, username: e.target.value })}
+                placeholder="Username"
+                className="w-full px-4 py-2 bg-gray-800 rounded"
+              />
+              <input
+                type="email"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                placeholder="Email"
+                className="w-full px-4 py-2 bg-gray-800 rounded"
+              />
+              <input
+                type="password"
+                value={form.password}
+                onChange={(e) => setForm({ ...form, password: e.target.value })}
+                placeholder="New Password (optional)"
+                className="w-full px-4 py-2 bg-gray-800 rounded"
+              />
+              <div className="flex gap-4">
                 <button
-                  type="submit"
-                  disabled={saving}
-                  className="bg-blue-600 px-6 py-2 rounded hover:bg-blue-700 font-semibold"
+                  onClick={handleUpdate}
+                  className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded"
                 >
-                  {saving ? 'Saving...' : 'Update Profile'}
+                  Save
                 </button>
                 <button
-                  type="button"
-                  onClick={() => navigate(id ? '/user-controls' : '/profile')}
-                  className="bg-gray-600 px-6 py-2 rounded hover:bg-gray-700 font-semibold"
+                  onClick={() => navigate('/profile')}
+                  className="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded"
                 >
                   Cancel
                 </button>
               </div>
-            </form>
+            </>
           )}
         </div>
       </div>
     </>
   );
-};
-
-export default UserProfileEditPage;
+}
