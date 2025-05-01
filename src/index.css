@@ -1,41 +1,77 @@
-// File: tailwind.config.js
+/* File: src/index.css */
 
-const plugin = require('tailwindcss/plugin');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-module.exports = {
-  content: [
-    './index.html',
-    './src/**/*.{js,jsx,ts,tsx}',
-  ],
-  darkMode: 'class',
-  theme: {
-    extend: {
-      colors: {
-        primary: '#2563eb',
-        dark: '#0f172a',
-        light: '#f1f5f9',
-      },
-      fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-      },
-      animation: {
-        fade: 'fadeIn 0.8s ease-in-out',
-      },
-      keyframes: {
-        fadeIn: {
-          '0%': { opacity: '0' },
-          '100%': { opacity: '1' },
-        },
-      },
-    },
-  },
-  plugins: [
-    require('@tailwindcss/forms'),        // Better form input styling
-    require('@tailwindcss/aspect-ratio'), // Utility for aspect ratios
-    require('@tailwindcss/line-clamp'),   // Truncating text
-    plugin(function ({ addVariant }) {
-      addVariant('child', '& > *');
-      addVariant('child-hover', '& > *:hover');
-    }),
-  ],
-};
+/* === Base Typography and Reset === */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  body {
+    @apply bg-white dark:bg-gray-950 text-gray-900 dark:text-white;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold text-gray-800 dark:text-white;
+  }
+
+  a {
+    @apply text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition;
+    text-decoration: none;
+  }
+
+  button {
+    @apply focus:outline-none transition duration-150 ease-in-out;
+  }
+
+  input, textarea, select {
+    @apply bg-white dark:bg-gray-800 text-black dark:text-white border border-gray-300 dark:border-gray-600 rounded;
+  }
+
+  ::selection {
+    background-color: #2563eb;
+    color: white;
+  }
+}
+
+/* === Scrollbar Styling === */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(100, 100, 100, 0.5);
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background-color: rgba(180, 180, 180, 0.2);
+}
+
+/* === Utility Layer Customizations (Optional overrides) === */
+@layer components {
+  .btn-primary {
+    @apply bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded transition;
+  }
+
+  .card {
+    @apply bg-white dark:bg-gray-900 rounded-lg shadow p-4 border dark:border-gray-700;
+  }
+
+  .input {
+    @apply w-full px-4 py-2 rounded border bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600;
+  }
+}
