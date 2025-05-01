@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { toast } from 'react-hot-toast';
 import { getKYCStatus } from '@/api'; // assuming you’ve imported this already
-import { uploadKYC } from '@/api/optional'; // file-based KYC API
 import { useUser } from '@/context/UserContext';
 
 const KYCUploadPage = () => {
