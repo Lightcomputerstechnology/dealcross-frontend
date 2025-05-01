@@ -11,7 +11,7 @@ const sampleReports = [
 
 const FinancialReportsPage = () => {
   const downloadCSV = () => {
-    const headers = ['ID',Title','Date','Amount'];
+    const headers = ['ID', 'Title', 'Date', 'Amount'];
     const rows = sampleReports.map(r => [r.id, r.title, r.date, r.amount]);
     const csvContent = [headers, ...rows].map(e => e.join(',')).join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
