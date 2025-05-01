@@ -5,9 +5,18 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { toast } from 'react-hot-toast';
 import CountUp from 'react-countup';
-import { FiAlertCircle, FiMessageSquare, FiBarChart2, FiUsers, FiSettings, FiBriefcase, FiClipboard, FiMenu } from 'react-icons/fi';
+import {
+  FiAlertCircle,
+  FiMessageSquare,
+  FiBarChart2,
+  FiUsers,
+  FiSettings,
+  FiBriefcase,
+  FiClipboard,
+  FiMenu,
+} from 'react-icons/fi';
 
-import MetricsCard from '@/components/admin/MetricsCard';
+import AdminMetricsCard from '@/components/admin/AdminMetricsCard'; // ✅ Newly added
 import FraudList from '@/components/admin/FraudList';
 import AuditLogViewer from '@/components/admin/AuditLogViewer';
 import PendingDealList from '@/components/admin/PendingDealList';
@@ -65,10 +74,6 @@ const AdminDashboard = () => {
       <Helmet>
         <title>Admin Dashboard - Dealcross</title>
         <meta name="description" content="Admin dashboard overview for Dealcross system and user control." />
-        <meta property="og:title" content="Admin Dashboard - Dealcross" />
-        <meta property="og:description" content="Monitor platform activities, user controls, fraud alerts, and more." />
-        <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary_large_image" />
       </Helmet>
 
       <div className="flex min-h-screen bg-[#0f172a] text-white">
@@ -112,8 +117,13 @@ const AdminDashboard = () => {
               <p className="text-sm text-yellow-400">Loading metrics...</p>
             ) : (
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {metrics.map((m) => (
-                  <MetricsCard key={m.id} type={m.type} value={<CountUp end={m.value} duration={2} />} timestamp={m.timestamp} />
+                {metrics.map((metric) => (
+                  <AdminMetricsCard
+                    key={metric.id}
+                    label={metric.type}
+                    value={<CountUp end={metric.value} duration={2} />}
+                    lastUpdated={metric.timestamp}
+                  />
                 ))}
               </div>
             )}
