@@ -1,18 +1,18 @@
--import AppRoutes from './AppRoutes.jsx';
-+import App from './App.jsx';
+// File: src/layouts/SiteLayout.jsx
+import React from 'react';
+import { Outlet } from 'react-router-dom';
+// … your other imports
 
-ReactDOM.createRoot(root).render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <NotificationProvider>
-        <UserProvider>
--         <div className="animate-fade-in">
--           <AppRoutes />
--           <NotificationAlert />
--         </div>
-+         <App />               {/* ← Now you mount your full app */}
-      </UserProvider>
-    </NotificationProvider>
-  </BrowserRouter>
-</React.StrictMode>
-);
+const SiteLayout = () => {
+  return (
+    <div>
+      <h1 className="text-4xl text-red-500">🔥 SITE LAYOUT LOADED 🔥</h1>
+      {/* …rest of your layout */}
+      <main className="flex-grow">
+        <Outlet />
+      </main>
+    </div>
+  );
+};
+
+export default SiteLayout;
