@@ -10,8 +10,7 @@ import Navbar from './components/Navbar.jsx';
 import Footer from './components/Footer.jsx';
 import FloatingChatButton from './components/FloatingChatButton.jsx';
 import NotificationAlert from './components/common/NotificationAlert.jsx';
-import NotificationPopUp from './components/NotificationPopUp.jsx';
-
+import NotificationPopUp from './components/common/NotificationPopUp.jsx';
 // Context Providers
 import { NotificationProvider } from './context/NotificationContext.jsx';
 
