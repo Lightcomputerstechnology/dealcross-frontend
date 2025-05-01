@@ -36,3 +36,14 @@ export const getUserSettings = async () => {
     throw new Error('Could not fetch user settings.');
   }
 };
+
+// Verify user email
+export const verifyEmail = async (token) => {
+  try {
+    const res = await API.post('/auth/verify-email', { token });
+    return res.data;
+  } catch (err) {
+    console.error('verifyEmail failed:', err);
+    throw new Error('Email verification failed.');
+  }
+};
