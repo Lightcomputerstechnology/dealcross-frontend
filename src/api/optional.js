@@ -37,7 +37,7 @@ export const getUserSettings = async () => {
   }
 };
 
-// Verify user email
+// Verify user email using token
 export const verifyEmail = async (token) => {
   try {
     const res = await API.post('/auth/verify-email', { token });
