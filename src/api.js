@@ -516,4 +516,17 @@ export const getDealMessages = async (dealId) => {
   }
 };
 
+// Send a chat message in a deal
+export const sendDealMessage = async (dealId, message) => {
+  try {
+    const res = await API.post('/chat/send', {
+      deal_id: dealId,
+      message: message,
+    });
+    return res.data;
+  } catch (err) {
+    handleError(err);
+  }
+};
+
 export default API;
