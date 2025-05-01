@@ -4,7 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* === Base Typography and Reset === */
+/* === Base Styles & Typography === */
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -13,10 +13,10 @@
 
   body {
     @apply bg-white dark:bg-gray-950 text-gray-900 dark:text-white;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
     font-size: 16px;
     line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -42,7 +42,7 @@
   }
 }
 
-/* === Scrollbar Styling === */
+/* === Scrollbar === */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -61,10 +61,14 @@
   background-color: rgba(180, 180, 180, 0.2);
 }
 
-/* === Utility Layer Customizations (Optional overrides) === */
+/* === Custom Utility Components === */
 @layer components {
   .btn-primary {
     @apply bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded transition;
+  }
+
+  .btn-outline {
+    @apply border border-blue-600 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 py-2 px-4 rounded;
   }
 
   .card {
@@ -73,5 +77,38 @@
 
   .input {
     @apply w-full px-4 py-2 rounded border bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600;
+  }
+}
+
+/* === Accessibility Helpers === */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* === Print Styles === */
+@media print {
+  body {
+    @apply text-black bg-white;
+  }
+
+  a {
+    text-decoration: underline;
+    color: black !important;
+  }
+
+  nav, footer, .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
   }
 }
