@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import AppRoutes from './AppRoutes.jsx';
 import { NotificationProvider } from './context/NotificationContext.jsx';
 import { UserProvider } from './context/UserContext.jsx';
-import NotificationAlert from './components/NotificationAlert.jsx';
+import NotificationAlert from '@/components/common/NotificationAlert';
 import './index.css'; // Tailwind styles
 
 const root = document.getElementById('root');
