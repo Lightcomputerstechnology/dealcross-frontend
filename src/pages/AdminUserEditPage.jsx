@@ -1,5 +1,3 @@
-// File: src/pages/AdminUserEditPage.jsx
-
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -12,7 +10,12 @@ const AdminUserEditPage = () => {
   const navigate = useNavigate();
 
   const [user, setUser] = useState(null);
-  const [form, setForm] = useState({ email: '', role: 'user', status: 'active', email_verified: false });
+  const [form, setForm] = useState({
+    email: '',
+    role: 'user',
+    status: 'active',
+    email_verified: false,
+  });
   const [loading, setLoading] = useState(true);
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -20,7 +23,7 @@ const AdminUserEditPage = () => {
     const fetchUser = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await axios.get(`https://d-final.onrender.com/admin/users/${id}`, {
+        const res = await axios.get(`https://d-final.onrender.com/admin/user/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUser(res.data);
@@ -32,7 +35,7 @@ const AdminUserEditPage = () => {
         });
       } catch (err) {
         toast.error('Failed to load user');
-        navigate('/admin/user-control');
+        navigate('/user-controls');
       } finally {
         setLoading(false);
       }
@@ -43,11 +46,10 @@ const AdminUserEditPage = () => {
   const handleSave = async () => {
     try {
       const token = localStorage.getItem('token');
-      await axios.put(`https://d-final.onrender.com/admin/users/${id}`, form, {
+      await axios.put(`https://d-final.onrender.com/admin/update/${id}`, form, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success('User updated');
-      localStorage.setItem('user', JSON.stringify({ ...user, ...form }));
     } catch (err) {
       toast.error(err.response?.data?.detail || 'Update failed');
     }
@@ -56,11 +58,11 @@ const AdminUserEditPage = () => {
   const handleDelete = async () => {
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`https://d-final.onrender.com/admin/users/${id}`, {
+      await axios.delete(`https://d-final.onrender.com/admin/user/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success('User deleted');
-      navigate('/admin/user-control');
+      navigate('/user-controls');
     } catch (err) {
       toast.error(err.response?.data?.detail || 'Delete failed');
     }
