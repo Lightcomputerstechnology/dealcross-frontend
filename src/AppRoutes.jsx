@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import SiteLayout from '@/layouts/SiteLayout.jsx'; // <-- include .jsx
+import SiteLayout from '@/layouts/SiteLayout'; // <-- include .jsx
 import useAuthRedirect from '@/hooks/useAuthRedirect';
 
 // Route protection wrappers
