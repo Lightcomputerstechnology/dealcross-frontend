@@ -1,36 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { getUserSettings, getCurrentUser, updateProfile } from '@/api';
+import { getUserSettings, updateProfile, verifyEmail } from '@/api';
 import { toast } from 'react-hot-toast';
 
-export default function UserSettingsPage() {
-  const [user, setUser] = useState(null);
+const UserSettingsPage = () => {
   const [settings, setSettings] = useState(null);
   const [form, setForm] = useState({ username: '', email: '', password: '' });
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
+  const [verifying, setVerifying] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchSettings = async () => {
       try {
-        const userInfo = await getCurrentUser();
-        const settingInfo = await getUserSettings();
-
-        setUser(userInfo);
-        setSettings(settingInfo);
-
-        setForm({
-          username: userInfo.username || '',
-          email: userInfo.email || '',
-          password: '',
-        });
+        const data = await getUserSettings();
+        setSettings(data);
+        setForm({ username: data.username || '', email: data.email || '', password: '' });
       } catch (err) {
         toast.error('Failed to load settings.');
       } finally {
         setLoading(false);
       }
     };
-    fetchData();
+    fetchSettings();
   }, []);
 
   const handleChange = (e) => {
@@ -43,12 +35,24 @@ export default function UserSettingsPage() {
     setUpdating(true);
     try {
       const updated = await updateProfile(form);
+      toast.success('Profile updated successfully');
       localStorage.setItem('user', JSON.stringify(updated));
-      toast.success('Profile updated');
     } catch (err) {
-      toast.error(err.message || 'Update failed.');
+      toast.error(err.message);
     } finally {
       setUpdating(false);
+    }
+  };
+
+  const handleEmailVerify = async () => {
+    setVerifying(true);
+    try {
+      const result = await verifyEmail();
+      toast.success(result?.message || 'Verification email sent!');
+    } catch (err) {
+      toast.error(err.message || 'Verification failed.');
+    } finally {
+      setVerifying(false);
     }
   };
 
@@ -57,7 +61,6 @@ export default function UserSettingsPage() {
       <Helmet>
         <title>User Settings - Dealcross</title>
       </Helmet>
-
       <div className="max-w-2xl mx-auto bg-[#1e293b] p-8 rounded-xl shadow space-y-6">
         <h2 className="text-2xl font-bold">Account Settings</h2>
 
@@ -87,6 +90,21 @@ export default function UserSettingsPage() {
                 className="w-full px-4 py-2 bg-gray-800 rounded"
                 required
               />
+              {settings?.email_verified ? (
+                <span className="text-green-400 text-sm mt-1 inline-block">Verified</span>
+              ) : (
+                <div className="mt-2 flex items-center gap-2">
+                  <span className="text-yellow-400 text-sm">Not Verified</span>
+                  <button
+                    onClick={handleEmailVerify}
+                    disabled={verifying}
+                    type="button"
+                    className="text-sm bg-yellow-600 px-3 py-1 rounded hover:bg-yellow-700"
+                  >
+                    {verifying ? 'Sending...' : 'Verify Email'}
+                  </button>
+                </div>
+              )}
             </div>
 
             <div>
@@ -114,9 +132,7 @@ export default function UserSettingsPage() {
                 <h4 className="text-lg font-semibold mb-2">Your Fee Tier: {settings.tier}</h4>
                 <ul className="space-y-1 list-disc pl-5">
                   {Object.entries(settings.fee_rates).map(([key, val]) => (
-                    <li key={key}>
-                      {key.replace(/_/g, ' ')}: {val}
-                    </li>
+                    <li key={key}>{key.replace(/_/g, ' ')}: {val}</li>
                   ))}
                 </ul>
               </div>
@@ -126,4 +142,6 @@ export default function UserSettingsPage() {
       </div>
     </div>
   );
-}
+};
+
+export default UserSettingsPage;
