@@ -1,45 +1,53 @@
-import React from 'react';
+// File: src/pages/blog/WhyDealcrossBeats.jsx
+
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+import { getBlogDetails } from '@/api';
+import { toast } from 'react-hot-toast';
 
 export default function WhyDealcrossBeats() {
+  const { slug = 'why-dealcross' } = useParams();
+  const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const data = await getBlogDetails(slug);
+        setPost(data);
+      } catch (err) {
+        toast.error('Failed to load blog post.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPost();
+  }, [slug]);
+
   return (
-    <>
+    <main className="max-w-4xl mx-auto px-4 py-10 text-gray-900 dark:text-white">
       <Helmet>
-        <title>Why Choose Dealcross</title>
-        <meta name="description" content="Learn why Dealcross outperforms other platforms in escrow protection, wallet flexibility, and digital trading." />
-        <meta name="keywords" content="why dealcross, escrow, wallet, crypto, share trading, platform comparison" />
-        <meta name="author" content="Dealcross Team" />
+        <title>{post?.title || 'Blog'} - Dealcross</title>
+        <meta name="description" content={post?.excerpt || 'Dealcross blog post'} />
       </Helmet>
 
-      <main className="max-w-4xl mx-auto px-4 py-12 text-gray-900 dark:text-white">
-        <h1 className="text-4xl font-extrabold mb-6 text-center">Why Dealcross Beats Other Platforms</h1>
-        <p className="text-lg text-gray-600 dark:text-gray-300 mb-6 text-center">
-          Dealcross was built with security, flexibility, and innovation in mind—here’s what makes us stand out:
-        </p>
-
-        <div className="bg-white dark:bg-[#1e293b] p-6 rounded-xl shadow space-y-4">
-          <ul className="space-y-4 list-disc pl-6">
-            <li>
-              <strong>Real Escrow Protection:</strong> Funds are securely held until both parties approve the transaction.
-            </li>
-            <li>
-              <strong>Multi-Wallet Support:</strong> Fund and withdraw using your bank, cards, Bitcoin, or USDT—no limits.
-            </li>
-            <li>
-              <strong>Crypto + Share Trading:</strong> Buy and sell tokenized shares alongside digital currencies in one place.
-            </li>
-            <li>
-              <strong>Automated Dispute Tools:</strong> Our built-in resolution center ensures fair conflict handling.
-            </li>
-            <li>
-              <strong>Verified Trust Levels:</strong> Each user has a visible badge to boost credibility and reduce risk.
-            </li>
-            <li>
-              <strong>Lower Fees, Transparent Rates:</strong> No hidden charges—just simple, fair pricing based on your tier.
-            </li>
-          </ul>
-        </div>
-      </main>
-    </>
+      {loading ? (
+        <p className="text-yellow-400">Loading...</p>
+      ) : post ? (
+        <>
+          <h1 className="text-3xl font-bold mb-2">{post.title}</h1>
+          <div className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+            {new Date(post.date).toLocaleDateString()} • {post.read_time || '2 min'}
+          </div>
+          <div
+            className="prose prose-lg dark:prose-invert max-w-none"
+            dangerouslySetInnerHTML={{ __html: post.content }}
+          />
+        </>
+      ) : (
+        <p className="text-gray-500">Post not found.</p>
+      )}
+    </main>
   );
 }
