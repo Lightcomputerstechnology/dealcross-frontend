@@ -8,7 +8,7 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { FiFileText } from 'react-icons/fi';
 
-const KYCStatusPage = () => {
+export default function KYCStatusPage() {
   const [kycData, setKycData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -16,7 +16,7 @@ const KYCStatusPage = () => {
     setLoading(true);
     try {
       const data = await getKYCStatus();
-      setKycData(data);
+      setKycData(data || []);
     } catch (err) {
       toast.error(err.message || 'Failed to load KYC status.');
     } finally {
@@ -30,14 +30,10 @@ const KYCStatusPage = () => {
 
   const exportCSV = () => {
     const headers = 'User ID,Document Type,Document URL,Status,Submitted At\n';
-    const rows = kycData
-      .map((item) => {
-        const status = item.status.toUpperCase();
-        const date = new Date(item.submitted_at).toLocaleString();
-        return `${item.user_id},${item.document_type},${item.document_url},${status},${date}`;
-      })
-      .join('\n');
-
+    const rows = kycData.map(item => {
+      const date = new Date(item.submitted_at).toLocaleString();
+      return `${item.user_id},${item.document_type},${item.document_url},${item.status.toUpperCase()},${date}`;
+    }).join('\n');
     const blob = new Blob([headers + rows], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -49,7 +45,6 @@ const KYCStatusPage = () => {
   const exportPDF = () => {
     const section = document.getElementById('kyc-table-export');
     if (!section) return;
-
     html2canvas(section).then((canvas) => {
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF('p', 'mm', 'a4');
@@ -67,89 +62,51 @@ const KYCStatusPage = () => {
         <title>KYC Status - Dealcross</title>
       </Helmet>
 
-      <div className="min-h-screen bg-gray-100 dark:bg-gray-950 text-gray-900 dark:text-white py-10 px-4 sm:px-6">
-        <div className="max-w-5xl mx-auto bg-white dark:bg-gray-900 p-6 sm:p-8 rounded shadow-lg space-y-6 animate-fade-in">
+      <div className="min-h-screen px-4 py-10 bg-gray-100 dark:bg-gray-950 text-gray-900 dark:text-white">
+        <div className="max-w-6xl mx-auto bg-white dark:bg-gray-900 p-6 sm:p-8 rounded-xl shadow space-y-6">
+          {/* Header + Actions */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <h1 className="text-2xl sm:text-3xl font-bold">KYC Status</h1>
-            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-              <button
-                onClick={fetchStatus}
-                className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 focus:ring-2 focus:ring-blue-400 px-4 py-2 rounded-md text-white text-sm transition-all duration-300"
-              >
-                Refresh
-              </button>
-              <button
-                onClick={exportCSV}
-                className="w-full sm:w-auto bg-green-600 hover:bg-green-700 focus:ring-2 focus:ring-green-400 px-4 py-2 rounded-md text-white text-sm transition-all duration-300"
-              >
-                Export CSV
-              </button>
-              <button
-                onClick={exportPDF}
-                className="w-full sm:w-auto bg-red-600 hover:bg-red-700 focus:ring-2 focus:ring-red-400 px-4 py-2 rounded-md text-white text-sm transition-all duration-300"
-              >
-                Export PDF
-              </button>
+            <h1 className="text-2xl font-bold">KYC Status</h1>
+            <div className="flex flex-wrap gap-2">
+              <button onClick={fetchStatus} className="btn-primary">Refresh</button>
+              <button onClick={exportCSV} className="btn-outline text-green-500 border-green-500 hover:bg-green-100 dark:hover:bg-green-900">Export CSV</button>
+              <button onClick={exportPDF} className="btn-outline text-red-500 border-red-500 hover:bg-red-100 dark:hover:bg-red-900">Export PDF</button>
             </div>
           </div>
 
+          {/* Status Message or Table */}
           {loading ? (
             <p className="text-yellow-400 text-center">Loading...</p>
           ) : kycData.length === 0 ? (
-            <div className="text-center py-10 space-y-4">
-              <FiFileText className="mx-auto text-5xl text-blue-500" />
-              <p className="text-gray-500 dark:text-gray-400 text-lg">
-                No KYC documents submitted yet. Complete your KYC to get verified.
-              </p>
-              <a
-                href="/kyc-upload"
-                className="inline-block bg-blue-600 hover:bg-blue-700 focus:ring-2 focus:ring-blue-400 text-white px-5 py-2 rounded-md font-medium transition-all duration-300"
-              >
-                Upload KYC Documents
-              </a>
+            <div className="text-center py-12">
+              <FiFileText className="text-5xl text-blue-500 mx-auto mb-4" />
+              <p className="text-gray-500 dark:text-gray-400">No KYC documents submitted yet.</p>
+              <a href="/kyc-upload" className="mt-4 inline-block btn-primary">Upload KYC</a>
             </div>
           ) : (
             <div id="kyc-table-export" className="overflow-x-auto">
               <table className="w-full text-left text-sm border-collapse">
-                <thead>
-                  <tr className="border-b border-gray-700 text-gray-500 uppercase text-xs">
-                    <th className="py-2 px-2">User ID</th>
-                    <th className="px-2">Document Type</th>
-                    <th className="px-2">Document</th>
-                    <th className="px-2">Status</th>
-                    <th className="px-2">Submitted At</th>
+                <thead className="bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-400 uppercase text-xs">
+                  <tr>
+                    <th className="px-4 py-2">User ID</th>
+                    <th className="px-4 py-2">Document Type</th>
+                    <th className="px-4 py-2">Document</th>
+                    <th className="px-4 py-2">Status</th>
+                    <th className="px-4 py-2">Submitted</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {kycData.map((item, idx) => (
-                    <tr
-                      key={item.id}
-                      className={`border-t border-gray-700 ${idx % 2 === 0 ? 'bg-gray-50 dark:bg-gray-800' : ''}`}
-                    >
-                      <td className="py-2 px-2">{item.user_id}</td>
-                      <td className="px-2">{item.document_type}</td>
-                      <td className="px-2">
-                        <a
-                          href={item.document_url}
-                          className="text-blue-500 underline"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          View
-                        </a>
+                  {kycData.map((item, i) => (
+                    <tr key={item.id} className={`${i % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50 dark:bg-gray-800'} border-b border-gray-200 dark:border-gray-700`}>
+                      <td className="px-4 py-2">{item.user_id}</td>
+                      <td className="px-4 py-2">{item.document_type}</td>
+                      <td className="px-4 py-2">
+                        <a href={item.document_url} className="text-blue-500 underline" target="_blank" rel="noreferrer">View</a>
                       </td>
-                      <td
-                        className={`px-2 font-semibold ${
-                          item.status === 'approved'
-                            ? 'text-green-500'
-                            : item.status === 'rejected'
-                            ? 'text-red-500'
-                            : 'text-yellow-400'
-                        }`}
-                      >
+                      <td className={`px-4 py-2 font-medium ${item.status === 'approved' ? 'text-green-500' : item.status === 'rejected' ? 'text-red-500' : 'text-yellow-500'}`}>
                         {item.status}
                       </td>
-                      <td className="px-2">{new Date(item.submitted_at).toLocaleString()}</td>
+                      <td className="px-4 py-2">{new Date(item.submitted_at).toLocaleString()}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -158,19 +115,16 @@ const KYCStatusPage = () => {
           )}
         </div>
 
+        {/* Styles for animation */}
         <style>{`
-          .animate-fade-in {
-            animation: fadeIn 0.8s ease-in-out;
+          .btn-primary {
+            @apply bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition;
           }
-
-          @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+          .btn-outline {
+            @apply border text-sm px-4 py-2 rounded transition;
           }
         `}</style>
       </div>
     </>
   );
-};
-
-export default KYCStatusPage;
+}
