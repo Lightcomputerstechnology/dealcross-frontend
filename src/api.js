@@ -529,4 +529,14 @@ export const sendDealMessage = async (dealId, message) => {
   }
 };
 
+// Mark all deal messages as read
+export const markDealChatAsRead = async (dealId) => {
+  try {
+    const res = await API.post(`/chat/mark-read`, { deal_id: dealId });
+    return res.data;
+  } catch (err) {
+    handleError(err);
+  }
+};
+
 export default API;
