@@ -37,7 +37,7 @@ export const getUserSettings = async () => {
   }
 };
 
-// Verify user email using token
+// Request verification email (sends email to user)
 export const requestEmailVerification = async () => {
   try {
     const res = await API.post('/auth/request-verification');
@@ -45,5 +45,16 @@ export const requestEmailVerification = async () => {
   } catch (err) {
     console.error('requestEmailVerification failed:', err);
     throw new Error('Verification request failed.');
+  }
+};
+
+// Verify email using token from link
+export const verifyEmail = async (token) => {
+  try {
+    const res = await API.post('/auth/verify-email', { token });
+    return res.data;
+  } catch (err) {
+    console.error('verifyEmail failed:', err);
+    throw new Error('Email verification failed.');
   }
 };
