@@ -42,7 +42,7 @@
   }
 }
 
-/* === Scrollbar === */
+/* === Scrollbar Customization === */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -61,7 +61,7 @@
   background-color: rgba(180, 180, 180, 0.2);
 }
 
-/* === Custom Utility Components === */
+/* === Reusable Utility Components === */
 @layer components {
   .btn-primary {
     @apply bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded transition;
@@ -72,7 +72,7 @@
   }
 
   .card {
-    @apply bg-white dark:bg-gray-900 rounded-lg shadow p-4 border dark:border-gray-700;
+    @apply bg-white dark:bg-gray-900 rounded-lg shadow p-4 border border-gray-200 dark:border-gray-700;
   }
 
   .input {
@@ -80,7 +80,7 @@
   }
 }
 
-/* === Accessibility Helpers === */
+/* === Accessibility === */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -93,7 +93,7 @@
   border: 0;
 }
 
-/* === Print Styles === */
+/* === Print Mode === */
 @media print {
   body {
     @apply text-black bg-white;
