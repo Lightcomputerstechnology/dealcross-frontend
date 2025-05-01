@@ -38,12 +38,12 @@ export const getUserSettings = async () => {
 };
 
 // Verify user email using token
-export const verifyEmail = async (token) => {
+export const requestEmailVerification = async () => {
   try {
-    const res = await API.post('/auth/verify-email', { token });
+    const res = await API.post('/auth/request-verification');
     return res.data;
   } catch (err) {
-    console.error('verifyEmail failed:', err);
-    throw new Error('Email verification failed.');
+    console.error('requestEmailVerification failed:', err);
+    throw new Error('Verification request failed.');
   }
 };
