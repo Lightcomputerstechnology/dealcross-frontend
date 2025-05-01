@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { FiSettings, FiLock, FiBell } from 'react-icons/fi';
-import { Switch } from '@headlessui/react';
+import { Switch } from '@headlessui/react'; // ✅ Correct
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 
