@@ -2,13 +2,14 @@
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { toast } from 'react-hot-toast';
-import { getCurrentUser, updateProfile } from '@/api';
+import { getCurrentUser, updateProfile, verifyEmail } from '@/api';
 
 export default function UserProfile() {
   const [profile, setProfile] = useState(null);
   const [form, setForm] = useState({ username: '', email: '', password: '' });
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [verifying, setVerifying] = useState(false);
 
   const fetchProfile = async () => {
     try {
@@ -30,11 +31,23 @@ export default function UserProfile() {
     try {
       const updated = await updateProfile(form);
       setProfile(updated);
+      localStorage.setItem('user', JSON.stringify({ ...updated }));
       toast.success('Profile updated.');
-      localStorage.setItem('user', JSON.stringify({ ...profile, ...form }));
       setEditing(false);
     } catch (err) {
       toast.error(err.message || 'Update failed.');
+    }
+  };
+
+  const handleEmailVerify = async () => {
+    try {
+      setVerifying(true);
+      const result = await verifyEmail();
+      toast.success(result?.message || 'Verification email sent!');
+    } catch (err) {
+      toast.error(err.message || 'Verification request failed.');
+    } finally {
+      setVerifying(false);
     }
   };
 
@@ -53,10 +66,32 @@ export default function UserProfile() {
           ) : !editing ? (
             <>
               <p><strong>Username:</strong> {profile?.username}</p>
-              <p><strong>Email:</strong> {profile?.email}</p>
+              <p className="flex items-center gap-2">
+                <strong>Email:</strong> {profile?.email}
+                {profile?.email_verified ? (
+                  <span className="text-green-400 text-sm bg-green-900 px-2 py-0.5 rounded">
+                    Verified
+                  </span>
+                ) : (
+                  <span className="text-yellow-400 text-sm bg-yellow-900 px-2 py-0.5 rounded">
+                    Unverified
+                  </span>
+                )}
+              </p>
+
+              {!profile?.email_verified && (
+                <button
+                  onClick={handleEmailVerify}
+                  disabled={verifying}
+                  className="mt-2 bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded"
+                >
+                  {verifying ? 'Sending...' : 'Verify My Email'}
+                </button>
+              )}
+
               <button
                 onClick={() => setEditing(true)}
-                className="mt-4 bg-blue-600 px-4 py-2 rounded hover:bg-blue-700"
+                className="mt-6 bg-blue-600 px-4 py-2 rounded hover:bg-blue-700"
               >
                 Edit Profile
               </button>
