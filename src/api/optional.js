@@ -1,6 +1,6 @@
 // File: src/api/optional.js
 
-import API from './api';
+import API from '@/api'; // Make sure @ maps to /src in your Vite config
 
 // Upload KYC documents (multipart/form-data)
 export const uploadKYC = async (formData) => {
@@ -15,7 +15,7 @@ export const uploadKYC = async (formData) => {
   }
 };
 
-// Update current user profile (username/email/password)
+// Update user profile (username/email/password)
 export const updateProfile = async (updates) => {
   try {
     const res = await API.put('/user/profile/update', updates);
