@@ -494,4 +494,15 @@ export const getPendingDeals = async () => {
   }
 };
 
+
+// Admin: Approve a deal by ID
+export const approveDealById = async (dealId) => {
+  try {
+    const res = await API.post(`/admin/approve-deal/${dealId}`);
+    return res.data;
+  } catch (err) {
+    handleError(err);
+  }
+};
+
 export default API;
