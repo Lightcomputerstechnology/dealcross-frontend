@@ -1,9 +1,8 @@
 // File: src/components/ui/Button.jsx
-
 import React from 'react';
 import classNames from 'classnames';
 
-const Button = ({
+export const Button = ({
   children,
   onClick,
   type = 'button',
@@ -35,5 +34,3 @@ const Button = ({
     </button>
   );
 };
-
-export default Button;
