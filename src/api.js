@@ -483,4 +483,15 @@ export const getUserSettings = async () => {
   }
 };
 
+
+// Admin: Get all pending deals
+export const getPendingDeals = async () => {
+  try {
+    const res = await API.get('/admin/pending-deals');
+    return res.data;
+  } catch (err) {
+    handleError(err);
+  }
+};
+
 export default API;
