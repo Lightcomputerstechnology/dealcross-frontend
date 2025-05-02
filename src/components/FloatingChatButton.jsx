@@ -13,46 +13,47 @@ const FloatingChatButtons = () => {
     if (!token) {
       navigate('/login');
     } else {
-      navigate('/deal-tracker'); // or chat component if deal active
+      navigate('/deal-tracker'); // Adjust this route if needed
     }
   };
 
   const handleSupportChat = () => {
-    navigate('/contact'); // can later replace with real chat or popup
+    navigate('/contact'); // Update to /support if support chat added
   };
 
   return (
     <>
-      {/* Toggle Anchor */}
+      {/* Restore Anchor */}
       {!visible && (
         <button
           onClick={() => setVisible(true)}
-          className="fixed bottom-4 right-4 z-50 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full shadow-md"
+          className="fixed bottom-5 right-4 z-50 bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg transition-all"
+          aria-label="Open chat buttons"
         >
-          <FiMessageSquare className="text-lg" />
+          <FiMessageSquare className="text-xl" />
         </button>
       )}
 
-      {/* Floating Buttons Group */}
+      {/* Floating Buttons */}
       {visible && (
-        <div className="fixed bottom-4 z-50 flex justify-between w-full px-6 pointer-events-none">
-          {/* Support Chat (Left) */}
+        <div className="fixed bottom-5 z-50 flex justify-between items-center w-full px-6 pointer-events-none">
+          {/* Support Button (Left) */}
           <button
             onClick={handleSupportChat}
-            className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-full shadow-md flex items-center gap-2 pointer-events-auto"
+            className="pointer-events-auto bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2 transition-all"
           >
-            <FiHelpCircle /> Support
+            <FiHelpCircle className="text-lg" /> Support
           </button>
 
-          {/* Deal Chat (Right) */}
+          {/* Deal Chat Button (Right) */}
           <button
             onClick={() => {
               handleDealChat();
-              setVisible(false); // auto-collapse
+              setVisible(false); // collapse after use
             }}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full shadow-md flex items-center gap-2 pointer-events-auto"
+            className="pointer-events-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2 transition-all"
           >
-            <FiMessageSquare /> Deal Chat
+            <FiMessageSquare className="text-lg" /> Deal Chat
           </button>
         </div>
       )}
