@@ -1,5 +1,6 @@
 // File: src/api/optional.js
 
+import API from '@/api';
 import API from '@/api'; // Make sure @ maps to /src in your Vite config
 
 // Upload KYC documents (multipart/form-data)
