@@ -58,3 +58,14 @@ export const verifyEmail = async (token) => {
     throw new Error('Email verification failed.');
   }
 };
+
+
+export const getChatMessages = async (dealId) => {
+  const res = await API.get(`/chat/messages?deal_id=${dealId}`);
+  return res.data;
+};
+
+export const sendMessage = async (dealId, message) => {
+  const res = await API.post('/chat/send', { deal_id: dealId, message });
+  return res.data;
+};
