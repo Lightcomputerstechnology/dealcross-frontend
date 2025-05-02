@@ -27,7 +27,7 @@ import ContactPage from '@/pages/ContactPage';
 import FAQPage from '@/pages/FaqPage';
 import PrivacyPolicyPage from '@/pages/PrivacyPolicyPage';
 import TermsPage from '@/pages/TermsPage';
-import RefundPolicyPage from '@/pages/RefundPolicyPage';
+import RefundPolicy from '@/pages/RefundPolicy';
 import DocsPage from '@/pages/DocsPage';
 import WatermarkTest from '@/pages/WatermarkTest';
 
@@ -117,9 +117,9 @@ export default function AppRoutes() {
         <Route path="about" element={<AboutPage />} />
         <Route path="contact" element={<ContactPage />} />
         <Route path="faq" element={<FAQPage />} />
-        <Route path="privacy" element={<PrivacyPolicyPage />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
         <Route path="terms" element={<TermsPage />} />
-        <Route path="refund" element={<RefundPolicyPage />} />
+        <Route path="/refund-policy" element={<RefundPolicy />} />
         <Route path="docs" element={<DocsPage />} />
         <Route path="watermark" element={<WatermarkTest />} />
 
