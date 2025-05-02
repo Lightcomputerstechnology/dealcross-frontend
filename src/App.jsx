@@ -1,5 +1,4 @@
 // File: src/App.jsx
-
 import React from 'react';
 import AppRoutes from './AppRoutes.jsx';
 import { HelmetProvider } from 'react-helmet-async';
@@ -10,10 +9,7 @@ function App() {
   return (
     <HelmetProvider>
       <NotificationProvider>
-        {/* Entire layout and routes are handled in SiteLayout.jsx */}
         <AppRoutes />
-
-        {/* Toast Notifications */}
         <Toaster
           position="top-right"
           toastOptions={{
