@@ -1,45 +1,50 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { FiMessageCircle } from 'react-icons/fi';
-import axios from 'axios';
+// File: src/components/FloatingChatButton.jsx
+import React, { useState, useEffect } from 'react';
+import { FaCommentDots, FaTimes } from 'react-icons/fa';
+import { useLocation } from 'react-router-dom';
 
 const FloatingChatButton = () => {
-  const navigate = useNavigate();
   const location = useLocation();
-  const [unread, setUnread] = useState(false);
+  const [visible, setVisible] = useState(true);
+  const [buttonActive, setButtonActive] = useState(true);
 
+  // Hide on 404 page
+  if (location.pathname === '/404' || location.pathname.includes('not-found')) return null;
+
+  // Auto-hide after 8 seconds
   useEffect(() => {
-    const fetchUnread = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) return;
-        const res = await axios.get('https://d-final.onrender.com/chat/unread', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setUnread(res.data.unread_count > 0);
-      } catch (err) {
-        console.error('Unread check failed:', err);
-      }
-    };
-
-    fetchUnread();
-    const interval = setInterval(fetchUnread, 15000);
-    return () => clearInterval(interval);
+    const timer = setTimeout(() => setVisible(false), 8000);
+    return () => clearTimeout(timer);
   }, []);
 
-  if (location.pathname === '/chat-support') return null;
+  const toggleChat = () => {
+    setVisible(!visible);
+    setButtonActive(true);
+  };
 
   return (
-    <button
-      onClick={() => navigate('/chat-support')}
-      className="fixed bottom-6 right-6 z-50 bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-lg flex items-center justify-center transition hover:scale-105"
-      aria-label="Open Chat Support"
-    >
-      <FiMessageCircle className="text-2xl" />
-      {unread && (
-        <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 border border-white rounded-full animate-ping" />
+    <>
+      {/* Main Chat Button */}
+      {visible && (
+        <div
+          className="fixed bottom-6 right-1/2 translate-x-1/2 z-50 bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-lg transition-all duration-500"
+          onClick={() => setVisible(false)}
+        >
+          <FaTimes className="text-lg" />
+        </div>
       )}
-    </button>
+
+      {/* Toggle Icon (Appears when chat is hidden) */}
+      {!visible && buttonActive && (
+        <div
+          className="fixed bottom-6 right-6 z-40 bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-xl cursor-pointer animate-bounce"
+          onClick={toggleChat}
+          title="Open Chat"
+        >
+          <FaCommentDots className="text-lg" />
+        </div>
+      )}
+    </>
   );
 };
 
