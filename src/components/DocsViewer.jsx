@@ -8,14 +8,14 @@ const DocsViewer = ({ filePath }) => {
       {filePath ? (
         <iframe
           src={filePath}
-          title="Dealcross PDF Viewer"
+          title="Dealcross Document"
           className="w-full h-full animate-fade-in"
           frameBorder="0"
           loading="lazy"
         />
       ) : (
         <div className="h-full flex items-center justify-center text-gray-500 dark:text-gray-400">
-          No document found.
+          Document preview unavailable.
         </div>
       )}
     </div>
