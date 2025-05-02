@@ -10,8 +10,8 @@ const DocsPage = () => {
     <>
       <Helmet>
         <title>Dealcross Documentation</title>
-        <meta name="description" content="Official documentation, pitch decks, and platform guides for Dealcross investors and users." />
-        <meta name="keywords" content="dealcross, docs, pitchdeck, business, overview, pdf, documentation" />
+        <meta name="description" content="Official pitch deck and platform materials for Dealcross investors and partners." />
+        <meta name="keywords" content="dealcross, documentation, investor, deck, overview, fintech" />
       </Helmet>
 
       <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white px-4 py-10">
@@ -35,7 +35,7 @@ const DocsPage = () => {
             </a>
             <br />
             <a
-              href="/docs/pitchdeck.pptx"
+              href="/docs/dealcross_pitchdeck_with_email.pptx"
               download
               className="inline-flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-medium shadow transition"
             >
