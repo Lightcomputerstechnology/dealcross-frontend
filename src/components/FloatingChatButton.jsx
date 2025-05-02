@@ -8,8 +8,9 @@ const FloatingChatButtons = () => {
   const [visible, setVisible] = useState(true);
   const navigate = useNavigate();
 
+  // Auto-hide after 15 seconds
   useEffect(() => {
-    const timer = setTimeout(() => setVisible(false), 15000); // Auto-hide after 15s
+    const timer = setTimeout(() => setVisible(false), 15000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -18,7 +19,7 @@ const FloatingChatButtons = () => {
     if (!token) {
       navigate('/login');
     } else {
-      navigate('/deal-tracker');
+      navigate('/deal-tracker'); // Adjust path if using custom chat route
     }
     setVisible(false);
   };
@@ -30,7 +31,7 @@ const FloatingChatButtons = () => {
 
   return (
     <>
-      {/* Restore Anchor */}
+      {/* Restore Button */}
       {!visible && (
         <button
           onClick={() => setVisible(true)}
@@ -41,7 +42,7 @@ const FloatingChatButtons = () => {
         </button>
       )}
 
-      {/* Animated Floating Buttons */}
+      {/* Floating Button Group */}
       {visible && (
         <div className="fixed bottom-5 z-50 flex justify-between items-center w-full px-6 pointer-events-none animate-slide-in">
           <button
@@ -60,7 +61,7 @@ const FloatingChatButtons = () => {
         </div>
       )}
 
-      {/* Slide-in animation */}
+      {/* Animation */}
       <style>{`
         @keyframes slideIn {
           from {
