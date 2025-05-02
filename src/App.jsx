@@ -4,12 +4,14 @@ import AppRoutes from './AppRoutes.jsx';
 import { HelmetProvider } from 'react-helmet-async';
 import { Toaster } from 'react-hot-toast';
 import { NotificationProvider } from './context/NotificationContext.jsx';
+import FloatingChatButtons from './components/FloatingChatButtons.jsx'; // ✅ New import
 
 function App() {
   return (
     <HelmetProvider>
       <NotificationProvider>
         <AppRoutes />
+        <FloatingChatButtons /> {/* ✅ Added safely */}
         <Toaster
           position="top-right"
           toastOptions={{
