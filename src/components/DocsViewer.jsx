@@ -10,6 +10,7 @@ const DocsViewer = ({ filePath }) => {
         <meta name="description" content="Read Dealcross investor documents securely." />
       </Helmet>
 
+      {/* PDF Preview Box */}
       <div className="w-full h-[600px] border border-gray-300 dark:border-gray-700 rounded shadow bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         {filePath ? (
           <iframe
@@ -26,17 +27,7 @@ const DocsViewer = ({ filePath }) => {
         )}
       </div>
 
-      <div className="text-center mt-4">
-        <p className="text-sm text-gray-400">Dealcross_Investor_Pitch_2025.pdf</p>
-        <a
-          href={filePath}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-block bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 mt-2 rounded-lg font-semibold shadow transition"
-        >
-          Open
-        </a>
-      </div>
+      {/* No duplicate Open button here */}
     </>
   );
 };
