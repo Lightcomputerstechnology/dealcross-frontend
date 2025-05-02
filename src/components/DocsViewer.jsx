@@ -4,20 +4,18 @@ import React from 'react';
 
 const DocsViewer = ({ filePath }) => {
   return (
-    <div className="w-full h-[600px] rounded-md overflow-hidden border border-gray-300 dark:border-gray-700 shadow-lg">
-      {filePath ? (
-        <iframe
-          src={filePath}
-          title="Dealcross Document"
-          className="w-full h-full animate-fade-in"
-          frameBorder="0"
-          loading="lazy"
-        />
-      ) : (
-        <div className="h-full flex items-center justify-center text-gray-500 dark:text-gray-400">
-          Document preview unavailable.
-        </div>
-      )}
+    <div className="w-full h-[600px] overflow-hidden rounded-lg border border-gray-300 dark:border-gray-700 shadow">
+      <object
+        data={filePath}
+        type="application/pdf"
+        width="100%"
+        height="100%"
+        className="rounded"
+      >
+        <p className="text-center text-gray-500 dark:text-gray-400 p-4">
+          Your browser does not support PDF previews. You can download the file below.
+        </p>
+      </object>
     </div>
   );
 };
