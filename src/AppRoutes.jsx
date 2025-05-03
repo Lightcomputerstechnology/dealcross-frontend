@@ -18,6 +18,7 @@ const ProtectedAdminRoute = ({ children }) => {
 };
 
 // Pages
+import AdminReferralBonuses from '@/pages/AdminReferralBonuses';
 import LandingPage from '@/pages/LandingPage';
 import LoginPage from '@/pages/LoginPage';
 import SignupPage from '@/pages/SignupPage';
@@ -164,6 +165,7 @@ export default function AppRoutes() {
         <Route path="blog/intro" element={<IntroToDealcross />} />
 
         {/* Admin Routes */}
+        <Route path="/admin/referral-bonuses" element={<ProtectedAdminRoute><AdminReferralBonuses /></ProtectedAdminRoute>} />
         <Route path="/admin-wallet" element={<ProtectedAdminRoute><AdminWallet /></ProtectedAdminRoute>} />
         <Route path="admin-dashboard" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
         <Route path="admin-analytics" element={<ProtectedAdminRoute><AdminAnalyticsPage /></ProtectedAdminRoute>} />
