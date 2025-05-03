@@ -13,6 +13,7 @@ import {
   FiFileText,
   FiShield,
   FiSettings,
+  FiGift, // ✅ NEW icon
 } from 'react-icons/fi';
 import Logo from '@/assets/dealcross-logo.png';
 
@@ -25,6 +26,9 @@ const navLinks = [
   { name: "Activity Log", path: "/deal-logs", icon: FiFileText },
   { name: "Security", path: "/security-center", icon: FiShield },
   { name: "Settings", path: "/settings", icon: FiSettings },
+
+  // ✅ NEW ENTRY
+  { name: "Referral Bonuses", path: "/admin/referral-bonuses", icon: FiGift },
 ];
 
 export default function AdminSidebarMobile() {
