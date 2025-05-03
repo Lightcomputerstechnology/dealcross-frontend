@@ -1,6 +1,7 @@
 // File: src/api.js
 
 import axios from 'axios';
+import API from '../api';
 
 // Axios instance
 const API = axios.create({
@@ -586,6 +587,28 @@ export const updateKYCStatus = async (kycId, statusData) => {
     return res.data;
   } catch (err) {
     handleError(err);
+  }
+};
+
+// Get admin wallet logs
+export const getAdminWalletLogs = async () => {
+  try {
+    const response = await API.get('/admin-wallet/logs');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching admin wallet logs:', error);
+    throw new Error('Failed to load admin wallet logs.');
+  }
+};
+
+// Adjust admin wallet balance (credit or debit)
+export const adjustAdminWallet = async (adjustmentData) => {
+  try {
+    const response = await API.post('/admin-wallet/adjust', adjustmentData);
+    return response.data;
+  } catch (error) {
+    console.error('Error adjusting admin wallet:', error);
+    throw new Error('Failed to process admin wallet adjustment.');
   }
 };
 
