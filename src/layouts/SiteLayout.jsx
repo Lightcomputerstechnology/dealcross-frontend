@@ -15,7 +15,7 @@ const SiteLayout = () => {
         <Outlet />
       </main>
       <Footer />
-      <FloatingChatButton />
+      <FloatingChatButtons />
       <NotificationAlert />
       <NotificationPopUp />
     </div>
