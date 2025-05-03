@@ -3,7 +3,7 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import FloatingChatButton from '@/components/FloatingChatButton';
+import FloatingChatButtons from '@/components/FloatingChatButton';
 import NotificationAlert from '@/components/common/NotificationAlert';
 import NotificationPopUp from '@/components/common/NotificationPopUp';
 
