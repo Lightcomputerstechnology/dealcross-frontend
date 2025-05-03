@@ -13,6 +13,7 @@ import {
   FiFileText,
   FiTrendingUp,
   FiBell,
+  FiGift, // NEW icon for Referral Bonuses
 } from 'react-icons/fi';
 
 const navItems = [
@@ -35,6 +36,9 @@ const navItems = [
   { path: '/admin-charts', icon: <FiBarChart2 />, label: 'Live Charts' },
   { path: '/financial-reports', icon: <FiPieChart />, label: 'Financial Reports' },
   { path: '/admin-roles', icon: <FiUsers />, label: 'Role Management' },
+
+  // ✅ NEW: Referral Bonuses
+  { path: '/admin/referral-bonuses', icon: <FiGift />, label: 'Referral Bonuses' },
 ];
 
 const AdminSidebar = () => {
