@@ -67,6 +67,8 @@ import DisputeResolutionGuide from '@/pages/DisputeResolutionGuide';
 import FastPayoutsExplained from '@/pages/FastPayoutsExplained';
 import IntroToDealcross from '@/pages/IntroToDealcross';
 
+import AdminWallet from
+'@/pages/AdminWallet';
 import AdminDashboard from '@/pages/AdminDashboard';
 import AdminAnalyticsPage from '@/pages/AdminAnalyticsPage';
 import DealAnalytics from '@/pages/DealAnalytics';
