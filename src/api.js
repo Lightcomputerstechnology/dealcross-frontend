@@ -1,7 +1,6 @@
 // File: src/api.js
 
 import axios from 'axios';
-import API from '../api';
 
 // Axios instance
 const API = axios.create({
