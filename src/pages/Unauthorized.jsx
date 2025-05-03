@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { LockKeyhole } from 'lucide-react';
+import { LockKey } from 'lucide-react';
 
 const Unauthorized = () => {
   const [seconds, setSeconds] = useState(10);
