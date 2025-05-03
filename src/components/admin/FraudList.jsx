@@ -1,5 +1,3 @@
-// File: src/components/admin/FraudList.jsx
-
 import React, { useState } from 'react';
 import { CSVLink } from 'react-csv';
 
@@ -19,7 +17,7 @@ const FraudList = ({ loading, fraudReports }) => {
     <div className="space-y-4 animate-fade-in">
       <div className="flex items-center justify-between">
         <h4 className="text-sm font-semibold text-white">
-          Recent Alerts (Page {page} of {totalPages || 1})
+          Fraud Alerts (Page {page} of {totalPages || 1})
         </h4>
         {fraudReports.length > 0 && (
           <CSVLink
@@ -40,11 +38,19 @@ const FraudList = ({ loading, fraudReports }) => {
       ) : (
         <ul className="space-y-3">
           {paginated.map((item, index) => (
-            <li key={index} className="border-b border-gray-700 pb-2">
-              <p className="text-white">{item.message}</p>
-              <span className="text-xs text-gray-400 block">
-                {new Date(item.timestamp).toLocaleString()}
-              </span>
+            <li
+              key={index}
+              className="border-b border-gray-700 pb-2 text-sm"
+            >
+              <div className="flex items-start gap-2">
+                <span className="text-gray-400">#{(page - 1) * perPage + index + 1}.</span>
+                <div>
+                  <p className="text-white">{item.message || '—'}</p>
+                  <span className="text-xs text-gray-400 block">
+                    {item.timestamp ? new Date(item.timestamp).toLocaleString() : 'N/A'}
+                  </span>
+                </div>
+              </div>
             </li>
           ))}
         </ul>
@@ -55,14 +61,14 @@ const FraudList = ({ loading, fraudReports }) => {
           <button
             disabled={page === 1}
             onClick={() => setPage((p) => p - 1)}
-            className="bg-gray-700 px-3 py-1 rounded text-white disabled:opacity-40"
+            className="bg-gray-700 px-3 py-1 rounded text-white hover:bg-gray-600 disabled:opacity-40"
           >
             Prev
           </button>
           <button
             disabled={page === totalPages}
             onClick={() => setPage((p) => p + 1)}
-            className="bg-gray-700 px-3 py-1 rounded text-white disabled:opacity-40"
+            className="bg-gray-700 px-3 py-1 rounded text-white hover:bg-gray-600 disabled:opacity-40"
           >
             Next
           </button>
