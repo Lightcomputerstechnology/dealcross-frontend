@@ -1,6 +1,7 @@
 // File: src/AppRoutes.jsx
 
 import SiteLayout from '@/layouts/SiteLayout';
+import Unauthorized from '@/pages/Unauthorized';
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import useAuthRedirect from '@/hooks/useAuthRedirect';
@@ -67,8 +68,7 @@ import DisputeResolutionGuide from '@/pages/DisputeResolutionGuide';
 import FastPayoutsExplained from '@/pages/FastPayoutsExplained';
 import IntroToDealcross from '@/pages/IntroToDealcross';
 
-import AdminWallet from
-'@/pages/AdminWallet';
+import AdminWallet from'@/pages/AdminWallet';
 import AdminDashboard from '@/pages/AdminDashboard';
 import AdminAnalyticsPage from '@/pages/AdminAnalyticsPage';
 import DealAnalytics from '@/pages/DealAnalytics';
@@ -103,6 +103,7 @@ import ExchangeRatesViewer from '@/pages/ExchangeRatesViewerPage';
 import SubscriptionPlansManager from '@/pages/SubscriptionPlansManagerPage';
 
 import PendingDealList from '@/components/admin/PendingDealList';
+import ProtectedAdminRoute from '@/components/ProtectedAdminRoute';
 import UserControlList from '@/components/admin/UserControlList';
 
 import NotFound from '@/pages/NotFound';
@@ -112,6 +113,7 @@ export default function AppRoutes() {
     <Routes>
       <Route element={<SiteLayout />}>
         {/* Public Routes */}
+        <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/" element={<LandingPage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="signup" element={<SignupPage />} />
