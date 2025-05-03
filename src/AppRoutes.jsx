@@ -162,6 +162,7 @@ export default function AppRoutes() {
         <Route path="blog/intro" element={<IntroToDealcross />} />
 
         {/* Admin Routes */}
+        <Route path="/admin-wallet" element={<ProtectedAdminRoute><AdminWallet /></ProtectedAdminRoute>} />
         <Route path="admin-dashboard" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
         <Route path="admin-analytics" element={<ProtectedAdminRoute><AdminAnalyticsPage /></ProtectedAdminRoute>} />
         <Route path="deal-analytics" element={<ProtectedAdminRoute><DealAnalytics /></ProtectedAdminRoute>} />
