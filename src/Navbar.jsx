@@ -1,23 +1,46 @@
-// File: src/components/Navbar.jsx
-import React from 'react';
-import { Link } from 'react-router-dom';
+// File: src/pages/Unauthorized.jsx
 
-const Navbar = () => {
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
+
+const Unauthorized = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigate('/');
+    }, 10000); // Auto-redirect after 10 seconds
+    return () => clearTimeout(timer);
+  }, [navigate]);
+
   return (
-    <nav className="bg-white dark:bg-gray-900 shadow-md py-4 px-6">
-      <div className="max-w-6xl mx-auto flex justify-between items-center">
-        <Link to="/" className="text-2xl font-bold text-blue-600 dark:text-white">
-          Dealcross
-        </Link>
-        <div className="space-x-4">
-          <Link to="/login" className="text-gray-700 dark:text-gray-300 hover:underline">Login</Link>
-          <Link to="/signup" className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-sm">
-            Sign Up
-          </Link>
+    <>
+      <Helmet>
+        <title>Unauthorized Access | Dealcross</title>
+      </Helmet>
+
+      <div className="min-h-screen flex flex-col justify-center items-center bg-gray-50 dark:bg-gray-900 px-4">
+        <div className="max-w-md text-center">
+          <h1 className="text-4xl font-bold text-red-600 dark:text-red-400 mb-4">
+            Access Denied
+          </h1>
+          <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">
+            You do not have permission to view this page.
+          </p>
+          <button
+            onClick={() => navigate('/')}
+            className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition"
+          >
+            Go Home Now
+          </button>
+          <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
+            You will be redirected in 10 seconds...
+          </p>
         </div>
       </div>
-    </nav>
+    </>
   );
 };
 
-export default Navbar;
+export default Unauthorized;
