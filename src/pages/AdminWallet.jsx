@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getCurrentUser } from '../api';
-import {
-  getAdminWalletLogs,
-  adjustAdminWallet,
-} from '../api/adminWallet'; // You will create these helper functions
+import { getCurrentUser, getAdminWalletLogs, adjustAdminWallet } from '@/api'; // ✅ Corrected path and merged imports
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
