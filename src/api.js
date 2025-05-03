@@ -539,4 +539,54 @@ export const markDealChatAsRead = async (dealId) => {
   }
 };
 
+// Get admin wallet logs
+export const getAdminWalletLogs = async () => {
+  try {
+    const res = await API.get('/admin-wallet/logs');
+    return res.data;
+  } catch (err) {
+    handleError(err);
+  }
+};
+
+// Manually credit or debit the admin wallet
+export const adjustAdminWallet = async (payload) => {
+  try {
+    const res = await API.post('/admin-wallet/adjust', payload);
+    return res.data;
+  } catch (err) {
+    handleError(err);
+  }
+};
+
+// Get all referral reward logs
+export const getReferralRewards = async () => {
+  try {
+    const res = await API.get('/admin/referral-rewards');
+    return res.data;
+  } catch (err) {
+    handleError(err);
+  }
+};
+
+// Get all submitted KYC requests
+export const getAllKYCRequests = async () => {
+  try {
+    const res = await API.get('/admin/kyc/requests');
+    return res.data;
+  } catch (err) {
+    handleError(err);
+  }
+};
+
+// Approve or reject a specific KYC submission
+export const updateKYCStatus = async (kycId, statusData) => {
+  try {
+    const res = await API.post(`/admin/kyc/${kycId}/update`, statusData);
+    return res.data;
+  } catch (err) {
+    handleError(err);
+  }
+};
+
 export default API;
