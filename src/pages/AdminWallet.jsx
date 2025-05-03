@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getCurrentUser, getAdminWalletLogs, adjustAdminWallet } from '@/api'; // ✅ Corrected path and merged imports
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
