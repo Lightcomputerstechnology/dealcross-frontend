@@ -1,8 +1,14 @@
-/* File: src/index.css */
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* === Force default dark background on load === */
+html {
+  background-color: white;
+}
+html.dark {
+  background-color: #0f172a; /* Tailwind gray-950 */
+}
 
 /* === Base Styles & Typography === */
 @layer base {
