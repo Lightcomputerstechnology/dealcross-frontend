@@ -1,5 +1,3 @@
-// File: src/components/Navbar.jsx
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu as MenuIcon, X as XIcon } from 'react-feather';
@@ -23,11 +21,13 @@ export default function Navbar() {
   return (
     <nav className={`bg-white dark:bg-gray-900 transition-colors duration-300 shadow-sm relative z-50 ${scrolled ? 'shadow-lg' : ''}`}>
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+        {/* Logo */}
         <Link to="/" className="flex items-center">
           <img src={Logo} alt="Dealcross" className="h-8 w-auto mr-2" />
           <span className="text-xl font-bold text-gray-900 dark:text-white">Dealcross</span>
         </Link>
 
+        {/* Desktop Nav */}
         <div className="hidden md:flex space-x-6">
           <Link to="/" className="hover:text-blue-600 dark:hover:text-blue-400">Home</Link>
           <Link to="/deals" className="hover:text-blue-600 dark:hover:text-blue-400">Deals</Link>
@@ -37,6 +37,7 @@ export default function Navbar() {
           <Link to="/upgrade" className="hover:text-blue-600 dark:hover:text-blue-400 font-semibold">Upgrade</Link>
         </div>
 
+        {/* Desktop Right Controls */}
         <div className="hidden md:flex items-center space-x-3">
           <Link
             to="/login"
@@ -54,6 +55,7 @@ export default function Navbar() {
           <LanguageSwitcher />
         </div>
 
+        {/* Mobile Controls */}
         <div className="flex items-center md:hidden space-x-2">
           <Link
             to="/login"
@@ -77,24 +79,27 @@ export default function Navbar() {
         </div>
       </div>
 
+      {/* Mobile Sidebar */}
       <AnimatePresence>
         {open && (
           <>
+            {/* Overlay */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm z-40"
+              className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-40"
               onClick={() => setOpen(false)}
-            ></motion.div>
+            />
 
+            {/* Sidebar (Fade-in Bottom) */}
             <motion.div
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
               transition={{ type: 'tween', duration: 0.3 }}
-              className="fixed top-0 right-0 w-3/4 h-full bg-white dark:bg-gray-900 text-gray-900 dark:text-white p-6 z-50 shadow-lg space-y-6 text-lg font-medium transition-colors"
+              className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 text-gray-900 dark:text-white z-50 p-6 rounded-t-2xl shadow-lg space-y-6 text-lg font-medium"
             >
               <div className="space-y-4">
                 <Link to="/" onClick={() => setOpen(false)} className="block hover:text-blue-600 dark:hover:text-blue-400">Home</Link>
@@ -104,6 +109,7 @@ export default function Navbar() {
                 <Link to="/docs" onClick={() => setOpen(false)} className="block hover:text-blue-600 dark:hover:text-blue-400">Docs</Link>
                 <Link to="/upgrade" onClick={() => setOpen(false)} className="block hover:text-blue-600 dark:hover:text-blue-400 font-semibold">Upgrade</Link>
               </div>
+
               <div className="border-t pt-4 space-y-4">
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-gray-500 dark:text-gray-400">Theme</span>
