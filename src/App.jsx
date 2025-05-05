@@ -7,25 +7,30 @@ import { Toaster } from 'react-hot-toast';
 import { NotificationProvider } from './context/NotificationContext.jsx';
 import FloatingChatButtons from './components/FloatingChatButtons.jsx';
 
+// Optional enhancement: react-intersection-observer context provider
+import { IntersectionObserverProvider } from 'react-intersection-observer';
+
 function App() {
   return (
     <HelmetProvider>
       <NotificationProvider>
-        <div className="relative min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-all duration-300">
-          <AppRoutes />
+        <IntersectionObserverProvider>
+          <div className="relative min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-all duration-300">
+            <AppRoutes />
 
-          {/* Floating Global Buttons */}
-          <FloatingChatButtons />
+            {/* Floating Global Buttons */}
+            <FloatingChatButtons />
 
-          {/* Toasts */}
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              duration: 4000,
-              className: 'bg-white dark:bg-gray-800 text-black dark:text-white shadow-lg rounded',
-            }}
-          />
-        </div>
+            {/* Toasts */}
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                duration: 4000,
+                className: 'bg-white dark:bg-gray-800 text-black dark:text-white shadow-lg rounded',
+              }}
+            />
+          </div>
+        </IntersectionObserverProvider>
       </NotificationProvider>
     </HelmetProvider>
   );
