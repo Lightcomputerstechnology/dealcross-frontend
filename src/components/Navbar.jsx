@@ -65,6 +65,7 @@ export default function Navbar() {
       <AnimatePresence>
         {open && (
           <>
+            {/* Overlay */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -73,12 +74,13 @@ export default function Navbar() {
               onClick={() => setOpen(false)}
             ></motion.div>
 
+            {/* Sidebar */}
             <motion.div
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'tween' }}
-              className="fixed top-0 right-0 w-3/4 h-full bg-white dark:bg-gray-900 p-6 z-50 shadow-lg space-y-6 text-lg font-medium"
+              className="fixed top-0 right-0 w-3/4 h-full bg-white dark:bg-gray-900 text-gray-900 dark:text-white p-6 z-50 shadow-lg space-y-6 text-lg font-medium transition-colors duration-300"
             >
               <div className="space-y-4">
                 <Link to="/" onClick={() => setOpen(false)} className="block hover:text-blue-600 dark:hover:text-blue-400">Home</Link>
