@@ -1,5 +1,3 @@
-// File: src/pages/ReferralProgram.jsx
-
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { FiCopy, FiCheckCircle } from 'react-icons/fi';
@@ -31,7 +29,7 @@ const ReferralProgram = () => {
             <span className="truncate text-sm">{referralLink}</span>
             <button
               onClick={handleCopy}
-              className="ml-4 flex items-center gap-2 bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-sm"
+              className="ml-4 flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white dark:text-white px-3 py-1 rounded text-sm transition"
             >
               {copied ? <FiCheckCircle /> : <FiCopy />}
               {copied ? 'Copied' : 'Copy'}
