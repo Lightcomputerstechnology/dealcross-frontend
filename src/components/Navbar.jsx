@@ -1,3 +1,5 @@
+// File: src/components/Navbar.jsx
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu as MenuIcon, X as XIcon } from 'react-feather';
@@ -21,13 +23,11 @@ export default function Navbar() {
   return (
     <nav className={`bg-white dark:bg-gray-900 transition-colors duration-300 shadow-sm relative z-50 ${scrolled ? 'shadow-lg' : ''}`}>
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-        {/* Logo */}
         <Link to="/" className="flex items-center">
           <img src={Logo} alt="Dealcross" className="h-8 w-auto mr-2" />
           <span className="text-xl font-bold text-gray-900 dark:text-white">Dealcross</span>
         </Link>
 
-        {/* Desktop Nav */}
         <div className="hidden md:flex space-x-6">
           <Link to="/" className="hover:text-blue-600 dark:hover:text-blue-400">Home</Link>
           <Link to="/deals" className="hover:text-blue-600 dark:hover:text-blue-400">Deals</Link>
@@ -37,17 +37,16 @@ export default function Navbar() {
           <Link to="/upgrade" className="hover:text-blue-600 dark:hover:text-blue-400 font-semibold">Upgrade</Link>
         </div>
 
-        {/* Desktop Right Controls */}
         <div className="hidden md:flex items-center space-x-3">
           <Link
             to="/login"
-            className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white dark:text-white text-sm rounded-md transition"
+            className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white hover:text-white dark:text-white text-sm rounded-md transition"
           >
             Login
           </Link>
           <Link
             to="/signup"
-            className="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-white dark:text-white text-sm rounded-md transition"
+            className="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-white hover:text-white dark:text-white text-sm rounded-md transition"
           >
             Sign Up
           </Link>
@@ -55,17 +54,16 @@ export default function Navbar() {
           <LanguageSwitcher />
         </div>
 
-        {/* Mobile Buttons */}
         <div className="flex items-center md:hidden space-x-2">
           <Link
             to="/login"
-            className="px-3 py-1 text-xs bg-blue-600 hover:bg-blue-700 text-white dark:text-white rounded-full transition"
+            className="px-3 py-1 text-xs bg-blue-600 hover:bg-blue-700 text-white hover:text-white dark:text-white rounded-full transition"
           >
             Login
           </Link>
           <Link
             to="/signup"
-            className="px-3 py-1 text-xs bg-gray-800 hover:bg-gray-700 text-white dark:text-white rounded-full transition"
+            className="px-3 py-1 text-xs bg-gray-800 hover:bg-gray-700 text-white hover:text-white dark:text-white rounded-full transition"
           >
             Sign Up
           </Link>
@@ -79,11 +77,9 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Sidebar */}
       <AnimatePresence>
         {open && (
           <>
-            {/* Overlay */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -93,7 +89,6 @@ export default function Navbar() {
               onClick={() => setOpen(false)}
             ></motion.div>
 
-            {/* Sidebar */}
             <motion.div
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
@@ -109,7 +104,6 @@ export default function Navbar() {
                 <Link to="/docs" onClick={() => setOpen(false)} className="block hover:text-blue-600 dark:hover:text-blue-400">Docs</Link>
                 <Link to="/upgrade" onClick={() => setOpen(false)} className="block hover:text-blue-600 dark:hover:text-blue-400 font-semibold">Upgrade</Link>
               </div>
-
               <div className="border-t pt-4 space-y-4">
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-gray-500 dark:text-gray-400">Theme</span>
