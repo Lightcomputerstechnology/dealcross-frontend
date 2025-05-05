@@ -20,7 +20,7 @@ const Unauthorized = () => {
         <title>Unauthorized Access | Dealcross</title>
       </Helmet>
 
-      <div className="min-h-screen flex flex-col justify-center items-center bg-gray-50 dark:bg-gray-900 px-4">
+      <div className="min-h-screen flex flex-col justify-center items-center bg-gray-50 dark:bg-gray-950 px-4">
         <div className="max-w-md text-center">
           <h1 className="text-4xl font-bold text-red-600 dark:text-red-400 mb-4">
             Access Denied
@@ -30,7 +30,7 @@ const Unauthorized = () => {
           </p>
           <button
             onClick={() => navigate('/')}
-            className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition"
+            className="px-6 py-2 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-all duration-200"
           >
             Go Home Now
           </button>
