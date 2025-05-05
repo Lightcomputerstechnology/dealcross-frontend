@@ -1,33 +1,48 @@
 // File: src/pages/ContactPage.jsx
 
-import React from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
 import { Helmet } from 'react-helmet';
 import { FiMail, FiClock } from 'react-icons/fi';
 
 export default function ContactPage() {
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState(null);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setStatus(null);
+    try {
+      await axios.post('https://d-final.onrender.com/contact/send-email', formData);
+      setStatus({ success: true, message: 'Message sent successfully!' });
+      setFormData({ name: '', email: '', message: '' });
+    } catch (err) {
+      setStatus({ success: false, message: 'Failed to send message. Please try again.' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <Helmet>
         <title>Contact Us - Dealcross</title>
-        <meta
-          name="description"
-          content="Reach out to the Dealcross team for help, support, or partnership opportunities."
-        />
+        <meta name="description" content="Reach out to the Dealcross team for support or partnerships." />
         <meta name="keywords" content="contact dealcross, support, help, message, email" />
         <meta name="author" content="Dealcross Team" />
         <meta property="og:title" content="Contact Dealcross Support" />
-        <meta
-          property="og:description"
-          content="Need help or have a question? Contact the Dealcross team today."
-        />
+        <meta property="og:description" content="Need help or have a question? Contact the Dealcross team today." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://dealcross.com/contact" />
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:title" content="Contact Dealcross" />
-        <meta
-          name="twitter:description"
-          content="We’re here to help! Reach out to our team for any support or partnership inquiry."
-        />
+        <meta name="twitter:description" content="We’re here to help! Reach out to our team anytime." />
       </Helmet>
 
       <section className="max-w-4xl mx-auto px-4 py-16">
@@ -36,13 +51,27 @@ export default function ContactPage() {
           Have questions or feedback? We'd love to hear from you.
         </p>
 
-        <form className="space-y-6">
+        {status && (
+          <div
+            className={`mb-4 text-center px-4 py-2 rounded ${
+              status.success ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+            }`}
+          >
+            {status.message}
+          </div>
+        )}
+
+        <form className="space-y-6" onSubmit={handleSubmit}>
           <div>
             <label className="block mb-1 font-medium">Name</label>
             <input
               type="text"
+              name="name"
+              required
+              value={formData.name}
+              onChange={handleChange}
               placeholder="Your Name"
-              className="input"
+              className="w-full px-4 py-2 border rounded-md bg-white dark:bg-gray-800 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
@@ -50,25 +79,34 @@ export default function ContactPage() {
             <label className="block mb-1 font-medium">Email</label>
             <input
               type="email"
+              name="email"
+              required
+              value={formData.email}
+              onChange={handleChange}
               placeholder="you@example.com"
-              className="input"
+              className="w-full px-4 py-2 border rounded-md bg-white dark:bg-gray-800 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           <div>
             <label className="block mb-1 font-medium">Message</label>
             <textarea
+              name="message"
               rows="5"
+              required
+              value={formData.message}
+              onChange={handleChange}
               placeholder="Type your message here..."
-              className="input"
+              className="w-full px-4 py-2 border rounded-md bg-white dark:bg-gray-800 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
             ></textarea>
           </div>
 
           <button
             type="submit"
-            className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-semibold transition"
+            disabled={loading}
+            className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-semibold transition disabled:opacity-60"
           >
-            Send Message
+            {loading ? 'Sending...' : 'Send Message'}
           </button>
         </form>
 
