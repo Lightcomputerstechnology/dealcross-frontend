@@ -18,23 +18,23 @@ keywords="escrow, secure deals, trading, wallet, Dealcross, Bitcoin, USDT"
       <h1 className="text-4xl sm:text-5xl font-extrabold mb-4">
         Secure Transactions with Dealcross
       </h1>
-      <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">
+      <p className="text-lg text-gray-700   dark:text-gray-300 mb-6">
         Escrow-powered payments, share trading, and digital security all in one place.
       </p>
       <div className="flex justify-center gap-4">
-        <Link
-          to="/signup"
-          className="px-6 py-3 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition"
-        >
-          Get Started
-        </Link>
-        <Link
-          to="/learn-more"
-          className="px-6 py-3 rounded-full border border-blue-600 text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-800 transition"
-        >
-          Learn More
-        </Link>
-      </div>
+  <Link
+    to="/signup"
+    className="px-6 py-3 rounded-full bg-blue-600      text-white font-semibold hover:bg-blue-700   transition"
+  >
+    Get Started
+  </Link>
+  <a
+    href="#how-it-works"
+    className="px-6 py-3 rounded-full border border-blue-500 text-blue-500 font-semibold hover:bg-blue-100 dark:hover:bg-gray-800 transition"
+  >
+    Learn More
+  </a>
+</div>
     </motion.section>
 
     {/* Core Features with Animations */}
