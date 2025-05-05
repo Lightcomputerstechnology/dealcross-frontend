@@ -1,4 +1,5 @@
-// File: src/components/Navbar.jsx  ⚡ FINAL FLASH‑FREE VERSION
+// File: src/components/Navbar.jsx
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu as MenuIcon, X as XIcon } from 'react-feather';
@@ -12,13 +13,15 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 10);
-    window.addEventListener('scroll', handler);
-    return () => window.removeEventListener('scroll', handler);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
-    <nav className={`bg-white dark:bg-gray-900 transition-colors duration-300 shadow-sm relative z-50 ${scrolled ? 'shadow-lg' : ''}`}>
+    <nav className={`bg-white dark:bg-gray-900 relative z-50 transition-shadow duration-300 ${scrolled ? "shadow-lg" : ""}`}>
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center">
@@ -28,63 +31,62 @@ export default function Navbar() {
 
         {/* Desktop Nav */}
         <div className="hidden md:flex space-x-6">
-          <Link to="/"            className="hover:text-blue-600 dark:hover:text-blue-400">Home</Link>
-          <Link to="/deals"       className="hover:text-blue-600 dark:hover:text-blue-400">Deals</Link>
-          <Link to="/share-trading" className="hover:text-blue-600 dark:hover:text-blue-400">Share Trading</Link>
-          <Link to="/contact"     className="hover:text-blue-600 dark:hover:text-blue-400">Contact</Link>
-          <Link to="/docs"        className="hover:text-blue-600 dark:hover:text-blue-400">Docs</Link>
-          <Link to="/upgrade"     className="hover:text-blue-600 dark:hover:text-blue-400 font-semibold">Upgrade</Link>
+          <Link to="/" className="hover:text-blue-600 dark:hover:text-blue-400">Home</Link>
+          <Link to="/deals" className="hover:text-blue-600 dark:hover:text-blue-400">Deals</Link>
+          <Link to="/share-trading" className="hover:text-blue-600 dark:hover:text-blue-400">Share Trading</Link>
+          <Link to="/contact" className="hover:text-blue-600 dark:hover:text-blue-400">Contact</Link>
+          <Link to="/docs" className="hover:text-blue-600 dark:hover:text-blue-400">Docs</Link>
+          <Link to="/upgrade" className="hover:text-blue-600 dark:hover:text-blue-400 font-semibold">Upgrade</Link>
         </div>
 
-        {/* Desktop Controls */}
+        {/* Desktop Right Controls */}
         <div className="hidden md:flex items-center space-x-3">
-          <Link to="/login"  className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white hover:text-white dark:text-white text-sm rounded-md transition">Login</Link>
-          <Link to="/signup" className="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-white hover:text-white dark:text-white text-sm rounded-md transition">Sign Up</Link>
+          <Link to="/login" className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-md">Login</Link>
+          <Link to="/signup" className="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-white text-sm rounded-md">Sign Up</Link>
           <ThemeToggle />
           <LanguageSwitcher />
         </div>
 
-        {/* Mobile Controls */}
+        {/* Mobile Buttons */}
         <div className="flex items-center md:hidden space-x-2">
-          <Link to="/login"  className="px-3 py-1 text-xs bg-blue-600 hover:bg-blue-700 text-white hover:text-white dark:text-white rounded-full transition">Login</Link>
-          <Link to="/signup" className="px-3 py-1 text-xs bg-gray-800 hover:bg-gray-700 text-white hover:text-white dark:text-white rounded-full transition">Sign Up</Link>
+          <Link to="/login" className="px-3 py-1 text-xs bg-blue-600 text-white rounded-full hover:bg-blue-700">Login</Link>
+          <Link to="/signup" className="px-3 py-1 text-xs bg-gray-800 text-white rounded-full hover:bg-gray-700">Sign Up</Link>
           <button onClick={() => setOpen(!open)}>
-            {open ? <XIcon   className="h-6 w-6 text-gray-900 dark:text-white" />
-                  : <MenuIcon className="h-6 w-6 text-gray-900 dark:text-white" />}
+            {open ? (
+              <XIcon className="h-6 w-6 text-gray-900 dark:text-white" />
+            ) : (
+              <MenuIcon className="h-6 w-6 text-gray-900 dark:text-white" />
+            )}
           </button>
         </div>
       </div>
 
-      {/* ───── Mobile Drawer ───── */}
+      {/* Mobile Sidebar */}
       <AnimatePresence>
         {open && (
           <>
-            {/* Dark overlay appears instantly (no flash) */}
             <motion.div
-              initial={{ opacity: 1 }}   /* already opaque */
+              initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+              className="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm z-40"
               onClick={() => setOpen(false)}
-            />
+            ></motion.div>
 
-            {/* Drawer slides up ‑ never paints white */}
             <motion.div
-              initial={{ y: '100%' }}
-              animate={{ y: 0 }}
-              exit={{ y: '100%' }}
-              transition={{ type: 'tween', duration: 0.25 }}
-              className="fixed bottom-0 left-0 right-0 z-50 p-6 rounded-t-2xl shadow-lg space-y-6 text-lg font-medium
-                         bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white"
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'tween' }}
+              className="fixed top-0 right-0 w-3/4 h-full bg-white dark:bg-gray-900 p-6 z-50 shadow-lg space-y-6 text-lg font-medium"
             >
               <div className="space-y-4">
-                <Link to="/"            onClick={() => setOpen(false)} className="block hover:text-blue-600 dark:hover:text-blue-400">Home</Link>
-                <Link to="/deals"       onClick={() => setOpen(false)} className="block hover:text-blue-600 dark:hover:text-blue-400">Deals</Link>
-                <Link to="/share-trading" onClick={() => setOpen(false)} className="block hover:text-blue-600 dark:hover:text-blue-400">Share Trading</Link>
-                <Link to="/contact"     onClick={() => setOpen(false)} className="block hover:text-blue-600 dark:hover:text-blue-400">Contact</Link>
-                <Link to="/docs"        onClick={() => setOpen(false)} className="block hover:text-blue-600 dark:hover:text-blue-400">Docs</Link>
-                <Link to="/upgrade"     onClick={() => setOpen(false)} className="block hover:text-blue-600 dark:hover:text-blue-400 font-semibold">Upgrade</Link>
+                <Link to="/" onClick={() => setOpen(false)} className="block hover:text-blue-600 dark:hover:text-blue-400">Home</Link>
+                <Link to="/deals" onClick={() => setOpen(false)} className="block hover:text-blue-600 dark:hover:text-blue-400">Deals</Link>
+                <Link to="/share-trading" onClick={() => setOpen(false)} className="block hover:text-blue-600 dark:hover:text-blue-400">Share Trading</Link>
+                <Link to="/contact" onClick={() => setOpen(false)} className="block hover:text-blue-600 dark:hover:text-blue-400">Contact</Link>
+                <Link to="/docs" onClick={() => setOpen(false)} className="block hover:text-blue-600 dark:hover:text-blue-400">Docs</Link>
+                <Link to="/upgrade" onClick={() => setOpen(false)} className="block hover:text-blue-600 dark:hover:text-blue-400 font-semibold">Upgrade</Link>
               </div>
 
               <div className="border-t pt-4 space-y-4">
