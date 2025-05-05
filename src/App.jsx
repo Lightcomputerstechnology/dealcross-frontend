@@ -7,8 +7,7 @@ import { Toaster } from 'react-hot-toast';
 import { NotificationProvider } from './context/NotificationContext.jsx';
 import FloatingChatButtons from './components/FloatingChatButtons.jsx';
 
-// Optional enhancement: react-intersection-observer context provider
-import { IntersectionObserverProvider } from 'react-intersection-observer';
+// Optional enhancement:
 
 function App() {
   return (
