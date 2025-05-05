@@ -41,13 +41,13 @@ export default function LandingPage() {
           <div className="flex justify-center gap-4">
             <Link
               to="/signup"
-              className="px-6 py-3 rounded-full bg-blue-600 text-white font-bold hover:bg-blue-700 transition"
+              className="px-6 py-3 rounded-full bg-blue-600 text-white dark:text-white font-bold hover:bg-blue-700 transition"
             >
               Get Started
             </Link>
             <a
               href="#how-it-works"
-              className="px-6 py-3 rounded-full border border-blue-600 text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-800 transition font-bold"
+              className="px-6 py-3 rounded-full border border-blue-600 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-gray-800 transition font-bold"
             >
               Learn More
             </a>
@@ -137,7 +137,7 @@ export default function LandingPage() {
         <div className="text-center mt-12">
           <Link
             to="/referral"
-            className="inline-block px-6 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition"
+            className="inline-block px-6 py-3 bg-blue-600 text-white dark:text-white font-bold rounded-lg hover:bg-blue-700 transition"
           >
             Join Our Referral Program →
           </Link>
@@ -175,7 +175,6 @@ export default function LandingPage() {
 
         {/* Contact */}
         <ContactSection />
-        {/* TODO: Email form in ContactSection should show placeholder message if backend not yet connected */}
       </main>
     </>
   );
