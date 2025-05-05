@@ -1,5 +1,3 @@
-// File: src/components/Navbar.jsx
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu as MenuIcon, X as XIcon } from 'react-feather';
@@ -12,16 +10,24 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
+  // Persist theme mode on load
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
-    };
+    const theme = localStorage.getItem('theme');
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
-    <nav className={`bg-white dark:bg-gray-950 ${scrolled ? 'shadow-lg' : ''} transition-shadow duration-300 relative z-50`}>
+    <nav className={`bg-white dark:bg-gray-900 relative z-50 transition-shadow duration-300 ${scrolled ? "shadow-lg" : ""}`}>
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center">
@@ -73,19 +79,20 @@ export default function Navbar() {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'tween' }}
-              className="fixed top-0 right-0 w-3/4 h-full bg-white dark:bg-gray-900 p-6 z-50 shadow-lg space-y-6 text-lg font-medium"
+              className="fixed top-0 right-0 w-3/4 h-full bg-gray-900 text-white p-6 z-50 shadow-lg space-y-6 text-lg font-medium transition-none"
             >
               <div className="space-y-4">
-                <Link to="/" onClick={() => setOpen(false)} className="block hover:text-blue-600 dark:hover:text-blue-400">Home</Link>
-                <Link to="/deals" onClick={() => setOpen(false)} className="block hover:text-blue-600 dark:hover:text-blue-400">Deals</Link>
-                <Link to="/share-trading" onClick={() => setOpen(false)} className="block hover:text-blue-600 dark:hover:text-blue-400">Share Trading</Link>
-                <Link to="/contact" onClick={() => setOpen(false)} className="block hover:text-blue-600 dark:hover:text-blue-400">Contact</Link>
-                <Link to="/docs" onClick={() => setOpen(false)} className="block hover:text-blue-600 dark:hover:text-blue-400">Docs</Link>
-                <Link to="/upgrade" onClick={() => setOpen(false)} className="block hover:text-blue-600 dark:hover:text-blue-400 font-semibold">Upgrade</Link>
+                <Link to="/" onClick={() => setOpen(false)} className="block hover:text-blue-400">Home</Link>
+                <Link to="/deals" onClick={() => setOpen(false)} className="block hover:text-blue-400">Deals</Link>
+                <Link to="/share-trading" onClick={() => setOpen(false)} className="block hover:text-blue-400">Share Trading</Link>
+                <Link to="/contact" onClick={() => setOpen(false)} className="block hover:text-blue-400">Contact</Link>
+                <Link to="/docs" onClick={() => setOpen(false)} className="block hover:text-blue-400">Docs</Link>
+                <Link to="/upgrade" onClick={() => setOpen(false)} className="block font-semibold hover:text-blue-400">Upgrade</Link>
               </div>
-              <div className="border-t pt-4 space-y-4">
+
+              <div className="border-t border-gray-700 pt-4 space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-500 dark:text-gray-400">Theme</span>
+                  <span className="text-sm text-gray-400">Theme</span>
                   <ThemeToggle />
                 </div>
                 <LanguageSwitcher />
