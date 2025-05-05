@@ -9,7 +9,6 @@ import './index.css'; // Tailwind + Global styles
 import { NotificationProvider } from './context/NotificationContext.jsx';
 import { UserProvider } from './context/UserContext.jsx';
 
-import 'intersection-observer'; // Polyfill (optional, but good for older browsers)
 
 const rootElement = document.getElementById('root');
 
