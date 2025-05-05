@@ -41,7 +41,7 @@ export default function LandingPage() {
           <div className="flex justify-center gap-4">
             <Link
               to="/signup"
-              className="px-6 py-3 rounded-full bg-blue-600 text-white dark:text-white font-bold hover:bg-blue-700 transition"
+              className="px-6 py-3 rounded-full bg-blue-600 text-white hover:text-white dark:text-white font-bold hover:bg-blue-700 transition"
             >
               Get Started
             </Link>
@@ -105,7 +105,7 @@ export default function LandingPage() {
           </p>
         </section>
 
-        {/* Platform Metrics w/ CountUp */}
+        {/* Platform Metrics */}
         <section
           ref={ref}
           className="max-w-6xl mx-auto px-4 py-12 text-center"
@@ -137,13 +137,13 @@ export default function LandingPage() {
         <div className="text-center mt-12">
           <Link
             to="/referral"
-            className="inline-block px-6 py-3 bg-blue-600 text-white dark:text-white font-bold rounded-lg hover:bg-blue-700 transition"
+            className="inline-block px-6 py-3 bg-blue-600 text-white hover:text-white dark:text-white font-bold rounded-lg hover:bg-blue-700 transition"
           >
             Join Our Referral Program →
           </Link>
         </div>
 
-        {/* FAQ & Blog */}
+        {/* FAQ + Blog */}
         <FAQPreview />
         <BlogPreviewList />
         <div className="text-center mt-4">
@@ -173,7 +173,6 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Contact */}
         <ContactSection />
       </main>
     </>
