@@ -1,3 +1,4 @@
+import CountUp from 'react-countup';
 import React from 'react'; import { Link } from 'react-router-dom'; import { motion } from 'framer-motion'; import SEOHead from '@/components/SEOHead'; import HowItWorks from '@/components/HowItWorks'; import TrustLevels from '@/components/TrustLevels'; import FastPayouts from '@/components/FastPayouts'; import DealsInProgress from '@/components/DealsInProgress'; import StartTradingCTA from '@/components/StartTradingCTA'; import FAQPreview from '@/components/FAQPreview'; import ContactSection from '@/components/ContactSection'; import BlogPreviewList from '@/components/BlogPreviewList';
 
 export default function LandingPage() { return ( <> <SEOHead
