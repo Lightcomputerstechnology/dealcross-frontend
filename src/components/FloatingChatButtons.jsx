@@ -1,92 +1,66 @@
-// File: src/components/FloatingChatButtons.jsx
+// File: src/components/FloatingButtons.jsx
 
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FiMessageSquare, FiHelpCircle } from 'react-icons/fi';
-import ChatPopup from './ChatPopup'; // ✅ Import chat component
+import { motion, AnimatePresence } from 'framer-motion';
+import { FaTimes, FaHeadset, FaCommentDots } from 'react-icons/fa';
 
-const FloatingChatButtons = () => {
+const FloatingButtons = () => {
   const [visible, setVisible] = useState(true);
-  const [chatVisible, setChatVisible] = useState(false); // ✅ Manage popup
-  const [dealId] = useState('demo123'); // Replace with actual logic if needed
 
-  const navigate = useNavigate();
-
+  // Auto-hide after 8 seconds
   useEffect(() => {
-    const timer = setTimeout(() => setVisible(false), 15000);
+    const timer = setTimeout(() => setVisible(false), 8000);
     return () => clearTimeout(timer);
   }, []);
 
-  const handleDealChat = () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/login');
-    } else {
-      setChatVisible(true); // ✅ Show popup chat
-    }
-    setVisible(false);
-  };
-
-  const handleSupportChat = () => {
-    navigate('/contact');
-    setVisible(false);
-  };
-
   return (
-    <>
+    <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end">
+      {/* Toggle to bring buttons back */}
       {!visible && (
         <button
           onClick={() => setVisible(true)}
-          className="fixed bottom-5 right-4 z-50 bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg transition-all"
-          aria-label="Open chat buttons"
+          className="mb-2 bg-blue-600 text-white p-2 rounded-full shadow hover:bg-blue-700 transition"
+          title="Show support buttons"
         >
-          <FiMessageSquare className="text-xl" />
+          <FaHeadset />
         </button>
       )}
 
-      {visible && (
-        <div className="fixed bottom-5 z-50 flex justify-between items-center w-full px-6 pointer-events-none animate-slide-in">
-          <button
-            onClick={handleSupportChat}
-            className="pointer-events-auto bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2 transition-all"
+      <AnimatePresence>
+        {visible && (
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 50 }}
+            transition={{ duration: 0.4 }}
+            className="space-y-2"
           >
-            <FiHelpCircle className="text-lg" /> Support
-          </button>
-
-          <button
-            onClick={handleDealChat}
-            className="pointer-events-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2 transition-all"
-          >
-            <FiMessageSquare className="text-lg" /> Deal Chat
-          </button>
-        </div>
-      )}
-
-      {/* Chat Popup UI */}
-      <ChatPopup
-        visible={chatVisible}
-        onClose={() => setChatVisible(false)}
-        dealId={dealId}
-      />
-
-      <style>{`
-        @keyframes slideIn {
-          from {
-            transform: translateY(80px);
-            opacity: 0;
-          }
-          to {
-            transform: translateY(0);
-            opacity: 1;
-          }
-        }
-
-        .animate-slide-in {
-          animation: slideIn 0.4s ease-out;
-        }
-      `}</style>
-    </>
+            <a
+              href="/support"
+              className="flex items-center bg-black text-white py-2 px-3 rounded shadow-md text-sm"
+            >
+              <FaHeadset className="mr-2" />
+              Support
+            </a>
+            <a
+              href="/chat"
+              className="flex items-center bg-blue-600 text-white py-2 px-3 rounded shadow-md text-sm"
+            >
+              <FaCommentDots className="mr-2" />
+              Deal Chat
+            </a>
+            <button
+              onClick={() => setVisible(false)}
+              className="bg-gray-700 text-white p-2 rounded-full ml-auto hover:bg-gray-800 transition"
+              title="Hide buttons"
+            >
+              <FaTimes />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 };
 
-export default FloatingChatButtons;
+export default FloatingButtons;
