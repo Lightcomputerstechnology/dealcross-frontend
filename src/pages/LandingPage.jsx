@@ -10,13 +10,15 @@ import FastPayouts from '@/components/FastPayouts';
 import DealsInProgress from '@/components/DealsInProgress';
 import StartTradingCTA from '@/components/StartTradingCTA';
 import FAQPreview from '@/components/FAQPreview';
+import { useTranslation } from 'react-i18next';
+const { t } = useTranslation();
+import { useTranslation } from 'react-i18next';
 import ContactSection from '@/components/ContactSection';
 import BlogPreviewList from '@/components/BlogPreviewList';
-
 export default function LandingPage() {
   const [ref, inView] = useInView({ triggerOnce: true });
-
-  return (
+  const { t } = useTranslation();
+ return (
     <>
       <SEOHead
         title="Dealcross - Escrow & Trading Platform"
