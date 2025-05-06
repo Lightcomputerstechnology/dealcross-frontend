@@ -48,12 +48,20 @@ const DealsPage = () => {
                   ${deal.amount} • Status:{" "}
                   <span className="font-medium text-blue-500">{deal.status}</span>
                 </p>
-                <Link
-                  to={`/chat-support?deal_id=${deal.id}`}
-                  className="inline-block mt-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 text-sm rounded"
-                >
-                  Open Chat
-                </Link>
+                <div className="flex gap-4 mt-2">
+                  <Link
+                    to={`/deal/${deal.id}`}
+                    className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-1.5 text-sm rounded"
+                  >
+                    View Deal
+                  </Link>
+                  <Link
+                    to={`/deal-chat/${deal.id}/${deal.counterparty_id}`}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 text-sm rounded"
+                  >
+                    Open Chat
+                  </Link>
+                </div>
               </li>
             ))}
           </ul>
