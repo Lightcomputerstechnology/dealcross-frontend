@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -29,10 +30,7 @@ export default function ForgotPasswordPage() {
     }
   };
 
-  const isEmailValid = (email) => {
-    const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return pattern.test(email);
-  };
+  const isEmailValid = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   return (
     <>
@@ -50,15 +48,18 @@ export default function ForgotPasswordPage() {
         <meta name="twitter:description" content="Reset your account securely through email." />
       </Helmet>
 
-      <main className="min-h-screen flex items-center justify-center px-6 py-10 bg-white dark:bg-gray-950 text-gray-900 dark:text-white">
-        <form
+      <main className="min-h-screen flex items-center justify-center px-6 py-12 bg-white dark:bg-gray-950 text-gray-900 dark:text-white">
+        <motion.form
           onSubmit={handleSubmit}
-          className="w-full max-w-md space-y-6 bg-white dark:bg-gray-900 p-8 rounded-xl shadow"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="w-full max-w-md space-y-6 bg-white dark:bg-gray-900 p-8 rounded-xl shadow-md border dark:border-gray-700"
         >
-          <h1 className="text-2xl font-bold text-center">Forgot Password</h1>
+          <h1 className="text-3xl font-bold text-center text-blue-600 dark:text-blue-400">Forgot Password</h1>
 
           <p className="text-sm text-gray-600 dark:text-gray-400 text-center">
-            Enter your email to receive a reset link.
+            Enter your email address and we’ll send you a password reset link.
           </p>
 
           <input
@@ -67,18 +68,20 @@ export default function ForgotPasswordPage() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email address"
             required
-            className="w-full px-4 py-2 rounded bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 focus:outline-none"
+            className="w-full px-4 py-3 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
 
           {!isEmailValid(email) && email.length > 3 && (
-            <p className="text-sm text-red-400 text-center">Enter a valid email address.</p>
+            <p className="text-sm text-red-400 text-center">Please enter a valid email address.</p>
           )}
 
           <button
             type="submit"
             disabled={!isEmailValid(email) || loading}
-            className={`w-full py-2 text-white rounded font-semibold transition ${
-              loading ? 'bg-gray-600 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+            className={`w-full py-3 rounded-lg font-semibold transition ${
+              loading
+                ? 'bg-gray-400 text-white cursor-not-allowed'
+                : 'bg-blue-600 hover:bg-blue-700 text-white'
             }`}
           >
             {loading ? 'Sending...' : 'Send Reset Link'}
@@ -91,7 +94,7 @@ export default function ForgotPasswordPage() {
               Back to Login
             </Link>
           </div>
-        </form>
+        </motion.form>
       </main>
     </>
   );
