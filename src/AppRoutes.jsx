@@ -5,7 +5,6 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import ScrollToTop from '@/components/ScrollToTop';
 import SiteLayout from '@/layouts/SiteLayout';
-import ScrollToTop from '@/components/ScrollToTop';
 import useAuthRedirect from '@/hooks/useAuthRedirect';
 
 // Route Guards
