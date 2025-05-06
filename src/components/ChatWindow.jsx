@@ -1,4 +1,3 @@
-// File: src/components/ChatWindow.jsx
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { FaCheckDouble } from 'react-icons/fa';
@@ -36,7 +35,7 @@ const ChatWindow = ({ onClose, receiverId, dealId }) => {
       await axios.post(
         'https://d-final.onrender.com/chat/send',
         {
-          content: input,
+          message: input,  // FIXED: match backend schema
           receiver_id: receiverId,
           deal_id: dealId,
         },
@@ -64,8 +63,7 @@ const ChatWindow = ({ onClose, receiverId, dealId }) => {
   }, []);
 
   useEffect(() => {
-    if (input) setTyping(true);
-    else setTyping(false);
+    setTyping(!!input);
   }, [input]);
 
   return (
@@ -85,7 +83,7 @@ const ChatWindow = ({ onClose, receiverId, dealId }) => {
                 : 'bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-white'
             }`}
           >
-            {msg.content}
+            {msg.message}
             {msg.is_read && (
               <FaCheckDouble className="inline-block ml-1 text-green-400 text-xs" />
             )}
