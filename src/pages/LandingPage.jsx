@@ -1,8 +1,11 @@
+// File: src/pages/LandingPage.jsx
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import CountUp from 'react-countup';
 import { useInView } from 'react-intersection-observer';
+import { useTranslation } from 'react-i18next';
+
 import SEOHead from '@/components/SEOHead';
 import HowItWorks from '@/components/HowItWorks';
 import TrustLevels from '@/components/TrustLevels';
@@ -10,57 +13,55 @@ import FastPayouts from '@/components/FastPayouts';
 import DealsInProgress from '@/components/DealsInProgress';
 import StartTradingCTA from '@/components/StartTradingCTA';
 import FAQPreview from '@/components/FAQPreview';
-import { useTranslation } from 'react-i18next';
-const { t } = useTranslation();
-import { useTranslation } from 'react-i18next';
 import ContactSection from '@/components/ContactSection';
 import BlogPreviewList from '@/components/BlogPreviewList';
+
 export default function LandingPage() {
   const [ref, inView] = useInView({ triggerOnce: true });
   const { t } = useTranslation();
- return (
+
+  return (
     <>
       <SEOHead
         title="Dealcross - Escrow & Trading Platform"
         description="Start secure escrow deals, trade shares, and manage wallet transactions on Dealcross."
         keywords="escrow, secure deals, trading, wallet, Dealcross, Bitcoin, USDT"
       />
-<main className="bg-white dark:bg-gray-950 text-gray-900 dark:text-white">
-  {/* Hero Section */}
-  <motion.section
-    initial={{ opacity: 0, y: -50 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.8 }}
-    className="max-w-6xl mx-auto px-4 py-20 text-center"
-  >
-    <h1 className="text-4xl sm:text-5xl font-extrabold mb-4">
-      {t('welcome_to_dealcross')}
-    </h1>
-    <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">
-      {t('your_trusted_escrow')}
-    </p>
-    <div className="flex justify-center gap-4">
-      <Link
-        to="/signup"
-        className="px-6 py-3 rounded-full bg-blue-600 text-white hover:text-white dark:text-white font-bold hover:bg-blue-700 transition"
-      >
-        {t('get_started')}
-      </Link>
-      <Link
-        to="/docs"
-        className="px-6 py-3 rounded-full bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-white font-semibold hover:bg-gray-300 dark:hover:bg-gray-700 transition"
-      >
-        {t('view_docs')}
-      </Link>
-    </div>
-  </motion.section>
-            <a
-              href="#how-it-works"
-              className="px-6 py-3 rounded-full border border-blue-600 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-gray-800 transition font-bold"
+
+      <main className="bg-white dark:bg-gray-950 text-gray-900 dark:text-white">
+        {/* Hero Section */}
+        <motion.section
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="max-w-6xl mx-auto px-4 py-20 text-center"
+        >
+          <h1 className="text-4xl sm:text-5xl font-extrabold mb-4">
+            {t('welcome_to_dealcross')}
+          </h1>
+          <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">
+            {t('your_trusted_escrow')}
+          </p>
+          <div className="flex justify-center gap-4 mb-6">
+            <Link
+              to="/signup"
+              className="px-6 py-3 rounded-full bg-blue-600 text-white hover:text-white dark:text-white font-bold hover:bg-blue-700 transition"
             >
-              Learn More
-            </a>
+              {t('get_started')}
+            </Link>
+            <Link
+              to="/docs"
+              className="px-6 py-3 rounded-full bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-white font-semibold hover:bg-gray-300 dark:hover:bg-gray-700 transition"
+            >
+              {t('view_docs')}
+            </Link>
           </div>
+          <a
+            href="#how-it-works"
+            className="px-6 py-3 rounded-full border border-blue-600 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-gray-800 transition font-bold inline-block"
+          >
+            Learn More
+          </a>
         </motion.section>
 
         {/* Sections */}
@@ -186,4 +187,4 @@ export default function LandingPage() {
       </main>
     </>
   );
-                  }
+}
