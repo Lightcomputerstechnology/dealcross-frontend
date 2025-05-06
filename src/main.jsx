@@ -5,8 +5,10 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App.jsx';
 import './index.css';
+
 import { NotificationProvider } from './context/NotificationContext.jsx';
 import { UserProvider } from './context/UserContext.jsx';
+import NotificationPopUp from './components/NotificationPopUp.jsx';  // ✅ Add this
 
 const rootElement = document.getElementById('root');
 
@@ -15,6 +17,7 @@ if (rootElement) {
     <React.StrictMode>
       <BrowserRouter>
         <NotificationProvider>
+          <NotificationPopUp /> {/* ✅ Global Popup */}
           <UserProvider>
             <App />
           </UserProvider>
