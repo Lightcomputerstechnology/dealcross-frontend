@@ -5,38 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dealcross — Escrow & Share Trading Platform</title>
 
-    <!-- === Immediate Dark/Light Setup & Inline Styles === -->
-    <script>
-      (function() {
-        const d = document.documentElement;
-        const isDark =
-          localStorage.theme === 'dark' ||
-          (!('theme' in localStorage) &&
-            window.matchMedia('(prefers-color-scheme: dark)').matches);
-        // Set class
-        d.classList.toggle('dark', isDark);
-        d.classList.toggle('light', !isDark);
-        // Inline background & text color so nothing ever flashes white
-        d.style.backgroundColor = isDark ? '#0f172a' : '#ffffff';
-        d.style.color = isDark ? '#ffffff' : '#1f2937';
-      })();
-    </script>
-
-    <!-- SEO & Meta Tags -->
+    <!-- SEO Meta Tags -->
     <meta name="description" content="Dealcross is a secure platform for escrow-powered transactions, crypto & share trading, and fraud prevention." />
     <meta name="keywords" content="dealcross, escrow, crypto trading, share trading, secure deals, fintech" />
     <meta name="author" content="Dealcross Team" />
-    <!-- ... your other head tags ... -->
+
+    <!-- Open Graph Meta -->
+    <meta property="og:title" content="Dealcross — Secure Deals, Escrow, Trading" />
+    <meta property="og:description" content="Escrow transactions, share trading, fraud protection — all in one place." />
+    <meta property="og:image" content="/og-image.png" />
+    <meta property="og:url" content="https://dealcross.com" />
+    <meta property="og:type" content="website" />
+
+    <!-- Twitter Meta -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Dealcross — Escrow & Share Trading Platform" />
+    <meta name="twitter:description" content="Secure online transactions and trading backed by escrow protection." />
+    <meta name="twitter:image" content="/og-image.png" />
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="/favicon.png" />
 
-    <!-- Preload Your Tailwind CSS -->
-    <link rel="stylesheet" href="/src/index.css" />
-  </head>
+    <!-- Fonts & Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+    <meta name="theme-color" content="#0f172a" />
 
-  <body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-white transition-colors duration-300">
+    <!-- Optional: Google Analytics -->
+    <!-- Replace G-XXXXXXX with your tracking ID -->
+    <!--
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){ dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXX');
+    </script>
+    -->
+  </head>
+  <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
-</html>
+  </html>
