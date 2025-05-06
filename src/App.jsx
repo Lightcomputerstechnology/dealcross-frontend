@@ -1,3 +1,5 @@
+// File: src/App.jsx
+
 import React from 'react';
 import AppRoutes from './AppRoutes.jsx';
 import { HelmetProvider } from 'react-helmet-async';
@@ -9,19 +11,19 @@ function App() {
   return (
     <HelmetProvider>
       <NotificationProvider>
-        {/*  ❌ removed bg-white  ⮕  ✅ default dark, optional light  */}
-        <div className="relative min-h-screen bg-gray-950 light:bg-white text-gray-100 light:text-gray-900 transition-colors duration-300">
+        <div className="relative min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-white transition-colors duration-300 ease-in-out">
+          {/* All Routes */}
           <AppRoutes />
 
-          {/* Floating global buttons */}
+          {/* Floating Buttons */}
           <FloatingChatButtons />
 
-          {/* Toasts */}
+          {/* Global Toasts */}
           <Toaster
             position="top-right"
             toastOptions={{
               duration: 4000,
-              className: 'bg-gray-900 light:bg-white text-white light:text-black shadow-lg rounded',
+              className: 'bg-white dark:bg-gray-800 text-black dark:text-white shadow-lg rounded-lg',
             }}
           />
         </div>
