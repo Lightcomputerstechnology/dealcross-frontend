@@ -1,66 +1,50 @@
-// File: src/components/FloatingButtons.jsx
+import React, { useState, useEffect } from 'react';
+import { FaCommentDots, FaTimes } from 'react-icons/fa';
+import { useLocation } from 'react-router-dom';
+import ChatWindow from './ChatWindow';
 
-import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FaTimes, FaHeadset, FaCommentDots } from 'react-icons/fa';
-
-const FloatingButtons = () => {
+const FloatingChatButton = () => {
+  const location = useLocation();
   const [visible, setVisible] = useState(true);
+  const [showChat, setShowChat] = useState(false);
 
-  // Auto-hide after 8 seconds
   useEffect(() => {
     const timer = setTimeout(() => setVisible(false), 8000);
     return () => clearTimeout(timer);
   }, []);
 
+  if (location.pathname === '/404' || location.pathname.includes('not-found')) return null;
+
+  const toggleChat = () => {
+    setShowChat(!showChat);
+    setVisible(false);
+  };
+
   return (
-    <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end">
-      {/* Toggle to bring buttons back */}
-      {!visible && (
-        <button
-          onClick={() => setVisible(true)}
-          className="mb-2 bg-blue-600 text-white p-2 rounded-full shadow hover:bg-blue-700 transition"
-          title="Show support buttons"
+    <>
+      {showChat && <ChatWindow onClose={() => setShowChat(false)} />}
+
+      {visible && !showChat && (
+        <div
+          className="fixed bottom-4 right-4 z-50 bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-lg transition-all duration-300 ease-in-out cursor-pointer"
+          onClick={() => setVisible(false)}
+          title="Close"
         >
-          <FaHeadset />
-        </button>
+          <FaTimes className="text-lg" />
+        </div>
       )}
 
-      <AnimatePresence>
-        {visible && (
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 50 }}
-            transition={{ duration: 0.4 }}
-            className="space-y-2"
-          >
-            <a
-              href="/support"
-              className="flex items-center bg-black text-white py-2 px-3 rounded shadow-md text-sm"
-            >
-              <FaHeadset className="mr-2" />
-              Support
-            </a>
-            <a
-              href="/chat"
-              className="flex items-center bg-blue-600 text-white py-2 px-3 rounded shadow-md text-sm"
-            >
-              <FaCommentDots className="mr-2" />
-              Deal Chat
-            </a>
-            <button
-              onClick={() => setVisible(false)}
-              className="bg-gray-700 text-white p-2 rounded-full ml-auto hover:bg-gray-800 transition"
-              title="Hide buttons"
-            >
-              <FaTimes />
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+      {!visible && !showChat && (
+        <div
+          className="fixed bottom-4 right-4 z-50 bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg transition-all duration-300 ease-in-out cursor-pointer"
+          onClick={toggleChat}
+          title="Chat with Support"
+        >
+          <FaCommentDots className="text-lg" />
+        </div>
+      )}
+    </>
   );
 };
 
-export default FloatingButtons;
+export default FloatingChatButton;
