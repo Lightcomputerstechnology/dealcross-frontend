@@ -42,6 +42,7 @@ import IntroToDealcross from '@/pages/IntroToDealcross';
 import DealsPage from '@/pages/DealsPage';
 import DealDetailsPage from '@/pages/DealDetailsPage';
 import StartDealPage from '@/pages/StartDealPage';
+import DealChatPage from './pages/DealChatPage.jsx'; // ✅
 import StartDealPairing from '@/pages/StartDealPairing';
 import DealConfirmation from '@/pages/DealConfirmation';
 import DealTrackerPage from '@/pages/DealTrackerPage';
@@ -139,7 +140,7 @@ export default function AppRoutes() {
           <Route path="/blog/fast-payouts" element={<FastPayoutsExplained />} />
           <Route path="/blog/intro" element={<IntroToDealcross />} />
           <Route path="/deals" element={<ProtectedUserRoute><DealsPage /></ProtectedUserRoute>} />
-          <Route path="/deal/:id" element={<ProtectedUserRoute><DealDetailsPage /></ProtectedUserRoute>} />
+          <Route path="/deal-chat/:id/:userId" element={<ProtectedUserRoute><DealChatPage /></ProtectedUserRoute>} />
           <Route path="/start-deal" element={<ProtectedUserRoute><StartDealPage /></ProtectedUserRoute>} />
           <Route path="/pair-deal" element={<ProtectedUserRoute><StartDealPairing /></ProtectedUserRoute>} />
           <Route path="/confirm-deal" element={<ProtectedUserRoute><DealConfirmation /></ProtectedUserRoute>} />
