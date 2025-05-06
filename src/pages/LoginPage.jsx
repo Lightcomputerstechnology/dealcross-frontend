@@ -1,9 +1,10 @@
 // File: src/pages/LoginPage.jsx
 
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { login } from '@/api';
+import { useNavigate, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+import { login } from '@/api';
+import { motion } from 'framer-motion';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -13,7 +14,6 @@ export default function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!email || !password) {
       setStatus('Please enter both email and password.');
       return;
@@ -41,48 +41,53 @@ export default function LoginPage() {
         <meta name="description" content="Securely log in to your Dealcross account." />
       </Helmet>
 
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-md bg-white dark:bg-gray-900 p-8 rounded-2xl shadow-md space-y-6 mx-auto mt-16"
-      >
-        <h2 className="text-2xl font-bold text-center">Login</h2>
-
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="input"
-          required
-        />
-
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="input"
-          required
-        />
-
-        {status && (
-          <p className="text-sm text-yellow-400 text-center">{status}</p>
-        )}
-
-        <button
-          type="submit"
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-semibold transition"
+      <main className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-950 text-gray-900 dark:text-white px-4">
+        <motion.form
+          onSubmit={handleSubmit}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="w-full max-w-md bg-white dark:bg-gray-900 p-8 rounded-2xl shadow-xl border dark:border-gray-700 space-y-6"
         >
-          Login
-        </button>
+          <h2 className="text-3xl font-bold text-center text-blue-600 dark:text-blue-400">Login to Dealcross</h2>
 
-        <p className="text-sm text-center text-gray-600 dark:text-gray-400">
-          Don’t have an account?{' '}
-          <a href="/signup" className="text-blue-600 hover:underline dark:text-blue-400">
-            Sign up
-          </a>
-        </p>
-      </form>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full px-4 py-3 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full px-4 py-3 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+
+          {status && (
+            <p className="text-sm text-center text-yellow-500">{status}</p>
+          )}
+
+          <button
+            type="submit"
+            className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition"
+          >
+            Login
+          </button>
+
+          <p className="text-sm text-center text-gray-600 dark:text-gray-400">
+            Don’t have an account?{' '}
+            <Link to="/signup" className="text-blue-600 dark:text-blue-400 hover:underline">
+              Sign up
+            </Link>
+          </p>
+        </motion.form>
+      </main>
     </>
   );
 }
