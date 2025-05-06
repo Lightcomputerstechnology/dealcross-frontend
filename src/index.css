@@ -1,6 +1,7 @@
 #// File: src/index.css
-
-@tailwind base; @tailwind components; @tailwind utilities;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /* === Base Styles & Typography === */ @layer base { html { scroll-behavior: smooth; font-family: 'Inter', system-ui, sans-serif; }
 
