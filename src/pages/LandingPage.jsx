@@ -23,28 +23,35 @@ export default function LandingPage() {
         description="Start secure escrow deals, trade shares, and manage wallet transactions on Dealcross."
         keywords="escrow, secure deals, trading, wallet, Dealcross, Bitcoin, USDT"
       />
-
-      <main className="bg-white dark:bg-gray-950 text-gray-900 dark:text-white">
-        {/* Hero Section */}
-        <motion.section
-          initial={{ opacity: 0, y: -50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="max-w-6xl mx-auto px-4 py-20 text-center"
-        >
-          <h1 className="text-4xl sm:text-5xl font-extrabold mb-4">
-            Secure Transactions with Dealcross
-          </h1>
-          <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">
-            Escrow-powered payments, share trading, and digital security all in one place.
-          </p>
-          <div className="flex justify-center gap-4">
-            <Link
-              to="/signup"
-              className="px-6 py-3 rounded-full bg-blue-600 text-white hover:text-white dark:text-white font-bold hover:bg-blue-700 transition"
-            >
-              Get Started
-            </Link>
+<main className="bg-white dark:bg-gray-950 text-gray-900 dark:text-white">
+  {/* Hero Section */}
+  <motion.section
+    initial={{ opacity: 0, y: -50 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.8 }}
+    className="max-w-6xl mx-auto px-4 py-20 text-center"
+  >
+    <h1 className="text-4xl sm:text-5xl font-extrabold mb-4">
+      {t('welcome_to_dealcross')}
+    </h1>
+    <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">
+      {t('your_trusted_escrow')}
+    </p>
+    <div className="flex justify-center gap-4">
+      <Link
+        to="/signup"
+        className="px-6 py-3 rounded-full bg-blue-600 text-white hover:text-white dark:text-white font-bold hover:bg-blue-700 transition"
+      >
+        {t('get_started')}
+      </Link>
+      <Link
+        to="/docs"
+        className="px-6 py-3 rounded-full bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-white font-semibold hover:bg-gray-300 dark:hover:bg-gray-700 transition"
+      >
+        {t('view_docs')}
+      </Link>
+    </div>
+  </motion.section>
             <a
               href="#how-it-works"
               className="px-6 py-3 rounded-full border border-blue-600 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-gray-800 transition font-bold"
