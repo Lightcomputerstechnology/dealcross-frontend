@@ -126,7 +126,7 @@ export default function AppRoutes() {
           <Route path="/verify-email" element={<VerifyEmailPage />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
           <Route path="/about" element={<AboutPage />} />
-          <Route path="/deal-chat/:id/:userId" element={<DealChatPage />} />
+          <Route path="/deal-chat/:id/:userId" element={<ProtectedUserRoute><DealChatPage /></ProtectedUserRoute>} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/faq" element={<FAQPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
