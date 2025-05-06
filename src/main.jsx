@@ -8,7 +8,7 @@ import './index.css';
 
 import { NotificationProvider } from './context/NotificationContext.jsx';
 import { UserProvider } from './context/UserContext.jsx';
-import NotificationPopUp from './components/NotificationPopUp.jsx';  // ✅ Add this
+import NotificationPopUp from './components/NotificationPopUp.jsx'; // ✅ Global Toast
 
 const rootElement = document.getElementById('root');
 
@@ -17,8 +17,8 @@ if (rootElement) {
     <React.StrictMode>
       <BrowserRouter>
         <NotificationProvider>
-          <NotificationPopUp /> {/* ✅ Global Popup */}
           <UserProvider>
+            <NotificationPopUp /> {/* ✅ Works inside context */}
             <App />
           </UserProvider>
         </NotificationProvider>
