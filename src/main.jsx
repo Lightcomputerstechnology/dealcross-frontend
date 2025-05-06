@@ -1,19 +1,16 @@
 // File: src/main.jsx
-
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
-
 import App from './App.jsx';
-import './index.css'; // Tailwind + Global styles
-
+import './index.css';
 import { NotificationProvider } from './context/NotificationContext.jsx';
 import { UserProvider } from './context/UserContext.jsx';
 
-const root = document.getElementById('root');
+const rootElement = document.getElementById('root');
 
-if (root) {
-  const app = (
+if (rootElement) {
+  ReactDOM.createRoot(rootElement).render(
     <React.StrictMode>
       <BrowserRouter>
         <NotificationProvider>
@@ -24,8 +21,6 @@ if (root) {
       </BrowserRouter>
     </React.StrictMode>
   );
-
-  ReactDOM.createRoot(root).render(app);
 } else {
-  console.error("❌ Root element not found. Ensure <div id='root'></div> exists in public/index.html");
+  console.error("❌ Root element not found. Ensure your public/index.html has: <div id='root'></div>");
 }
