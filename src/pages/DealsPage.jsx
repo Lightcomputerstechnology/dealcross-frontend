@@ -1,19 +1,22 @@
-// File: src/pages/DealsPage.jsx
-
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { getMyDeals } from '@/api';
+import { getMyDeals, getCurrentUser } from '@/api';
 import { Link } from 'react-router-dom';
 
 const DealsPage = () => {
   const [deals, setDeals] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
     const fetchDeals = async () => {
       try {
-        const data = await getMyDeals();
-        setDeals(data || []);
+        const [dealData, userData] = await Promise.all([
+          getMyDeals(),
+          getCurrentUser(),
+        ]);
+        setDeals(dealData || []);
+        setUserId(userData?.id);
       } catch (err) {
         console.error('Failed to load deals:', err.message);
       } finally {
@@ -41,29 +44,44 @@ const DealsPage = () => {
           <p className="text-center text-gray-500">You don't have any deals yet.</p>
         ) : (
           <ul className="space-y-4">
-            {deals.map((deal) => (
-              <li key={deal.id} className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-800">
-                <h2 className="text-xl font-semibold">{deal.title}</h2>
-                <p className="text-sm text-gray-500 dark:text-gray-300 mb-2">
-                  ${deal.amount} • Status:{" "}
-                  <span className="font-medium text-blue-500">{deal.status}</span>
-                </p>
-                <div className="flex gap-4 mt-2">
-                  <Link
-                    to={`/deal/${deal.id}`}
-                    className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-1.5 text-sm rounded"
-                  >
-                    View Deal
-                  </Link>
-                  <Link
-                    to={`/deal-chat/${deal.id}/${deal.counterparty_id}`}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 text-sm rounded"
-                  >
-                    Open Chat
-                  </Link>
-                </div>
-              </li>
-            ))}
+            {deals.map((deal) => {
+              const receiverId =
+                userId === deal.creator_id
+                  ? deal.counterparty_id
+                  : deal.creator_id;
+
+              return (
+                <li
+                  key={deal.id}
+                  className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-800"
+                >
+                  <h2 className="text-xl font-semibold">{deal.title}</h2>
+                  <p className="text-sm text-gray-500 dark:text-gray-300 mb-2">
+                    ${deal.amount} • Status:{" "}
+                    <span className="font-medium text-blue-500">
+                      {deal.status}
+                    </span>
+                  </p>
+                  <div className="flex gap-3 flex-wrap">
+                    <Link
+                      to={`/deal/${deal.id}`}
+                      className="inline-block bg-gray-600 hover:bg-gray-700 text-white px-4 py-1.5 text-sm rounded"
+                    >
+                      View Details
+                    </Link>
+
+                    {receiverId && (
+                      <Link
+                        to={`/deal-chat/${deal.id}/${receiverId}`}
+                        className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 text-sm rounded"
+                      >
+                        Open Chat
+                      </Link>
+                    )}
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         )}
 
