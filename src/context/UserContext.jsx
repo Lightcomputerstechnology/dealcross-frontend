@@ -61,3 +61,12 @@ export const UserProvider = ({ children }) => {
 };
 
 export const useUser = () => useContext(UserContext);
+
+// ✅ Add this admin hook for protected admin pages
+export const useRequireAdmin = () => {
+  const { user } = useUser();
+  if (!user || user.role !== 'admin') {
+    throw new Error('Admin access only');
+  }
+  return user;
+};
