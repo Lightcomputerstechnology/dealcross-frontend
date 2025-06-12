@@ -110,13 +110,15 @@ export default function ContactPage() {
           </button>
         </form>
 
-        <div className="mt-12 text-sm text-gray-500 dark:text-gray-400 text-center space-y-2">
-          <p className="flex justify-center items-center gap-2">
-            <FiMail /> Email: support@dealcross.com
-          </p>
-          <p className="flex justify-center items-center gap-2">
-            <FiClock /> Office Hours: Monday – Friday, 9AM – 6PM
-          </p>
+        <div className="mt-12 flex flex-col items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+          <div className="flex items-center gap-2">
+            <FiMail className="text-lg" />
+            <span>Email: support@dealcross.com</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <FiClock className="text-lg" />
+            <span>Office Hours: Monday – Friday, 9AM – 6PM</span>
+          </div>
         </div>
       </section>
     </>
