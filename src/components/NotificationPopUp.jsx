@@ -1,4 +1,3 @@
-// File: src/components/NotificationPopUp.jsx
 import React, { useEffect, useState } from 'react';
 import { useNotification } from '@/context/NotificationContext';
 import { FiCheckCircle, FiXCircle, FiInfo, FiX } from 'react-icons/fi';
@@ -6,6 +5,7 @@ import { FiCheckCircle, FiXCircle, FiInfo, FiX } from 'react-icons/fi';
 const NotificationPopUp = () => {
   const { notificationQueue, popNotification } = useNotification();
   const [current, setCurrent] = useState(null);
+  const [fadeOut, setFadeOut] = useState(false);
   const [timerId, setTimerId] = useState(null);
 
   useEffect(() => {
@@ -15,8 +15,12 @@ const NotificationPopUp = () => {
       playSound(next.type);
 
       const timeout = setTimeout(() => {
-        setCurrent(null);
-        popNotification();
+        setFadeOut(true);
+        setTimeout(() => {
+          setCurrent(null);
+          popNotification();
+          setFadeOut(false);
+        }, 300); // duration of fade-out
       }, 4000);
 
       setTimerId(timeout);
@@ -35,8 +39,12 @@ const NotificationPopUp = () => {
 
   const handleClose = () => {
     if (timerId) clearTimeout(timerId);
-    setCurrent(null);
-    popNotification();
+    setFadeOut(true);
+    setTimeout(() => {
+      setCurrent(null);
+      popNotification();
+      setFadeOut(false);
+    }, 300);
   };
 
   if (!current) return null;
@@ -49,7 +57,11 @@ const NotificationPopUp = () => {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 bg-[#1e293b] border border-gray-600 text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 z-50 animate-fade-in">
+    <div
+      className={`fixed bottom-6 right-6 bg-[#1e293b] border border-gray-600 text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 z-50 transition-opacity duration-300 ${
+        fadeOut ? 'opacity-0' : 'opacity-100'
+      }`}
+    >
       {iconMap[type] || iconMap.info}
       <span className="text-sm flex-1">{message}</span>
       <button
