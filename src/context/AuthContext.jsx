@@ -1,17 +1,38 @@
 // File: src/context/AuthContext.jsx
 
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useState, useEffect } from "react";
 
+// Create the context
 export const AuthContext = createContext();
 
-const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+// AuthProvider component
+export const AuthProvider = ({ children }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    // Load from localStorage on first load
+    const savedAuth = localStorage.getItem("isAuthenticated");
+    return savedAuth === "true";
+  });
+
+  // Sync changes to localStorage
+  useEffect(() => {
+    localStorage.setItem("isAuthenticated", isAuthenticated);
+  }, [isAuthenticated]);
+
+  // Handle login
+  const login = () => {
+    setIsAuthenticated(true);
+  };
+
+  // Handle logout
+  const logout = () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem("isAuthenticated");
+    // optionally: redirect to login or home
+  };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
-
-export default AuthProvider;
