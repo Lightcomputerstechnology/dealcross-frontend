@@ -1,5 +1,3 @@
-// File: src/AppRoutes.jsx
-
 import React, { Suspense } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
@@ -7,12 +5,14 @@ import ScrollToTop from '@/components/ScrollToTop';
 import SiteLayout from '@/layouts/SiteLayout';
 import useAuthRedirect from '@/hooks/useAuthRedirect';
 
-// Route Guards
+import ProtectedAdminRoute from '@/components/ProtectedAdminRoute';
+
+// ✅ Route guard
 const ProtectedUserRoute = ({ children }) => {
-  useAuthRedirect();
+  const shouldRedirect = useAuthRedirect();
+  if (shouldRedirect) return null; // Prevent render if redirect is triggered
   return children;
 };
-import ProtectedAdminRoute from '@/components/ProtectedAdminRoute';
 
 // Public Pages
 import LandingPage from '@/pages/LandingPage';
@@ -21,7 +21,6 @@ import SignupPage from '@/pages/SignupPage';
 import VerifyEmailPage from '@/pages/VerifyEmailPage';
 import Unauthorized from '@/pages/Unauthorized';
 import NotFound from '@/pages/NotFound';
-
 import AboutPage from '@/pages/AboutPage';
 import ContactPage from '@/pages/ContactPage';
 import FAQPage from '@/pages/FaqPage';
@@ -31,7 +30,7 @@ import RefundPolicy from '@/pages/RefundPolicy';
 import DocsPage from '@/pages/DocsPage';
 import WatermarkTest from '@/pages/WatermarkTest';
 
-// Blog Pages
+// Blog
 import BlogListPage from '@/pages/BlogListPage';
 import WhyDealcrossBeats from '@/pages/WhyDealcrossBeats';
 import DisputeResolutionGuide from '@/pages/DisputeResolutionGuide';
@@ -42,24 +41,20 @@ import IntroToDealcross from '@/pages/IntroToDealcross';
 import DealsPage from '@/pages/DealsPage';
 import DealDetailsPage from '@/pages/DealDetailsPage';
 import StartDealPage from '@/pages/StartDealPage';
-import DealChatPage from './pages/DealChatPage.jsx'; // ✅
+import DealChatPage from './pages/DealChatPage.jsx';
 import StartDealPairing from '@/pages/StartDealPairing';
 import DealConfirmation from '@/pages/DealConfirmation';
 import DealTrackerPage from '@/pages/DealTrackerPage';
-
 import WalletPage from '@/pages/WalletPage';
 import FundWalletPage from '@/pages/FundWalletPage';
 import TransactionHistory from '@/pages/TransactionHistory';
 import WalletHistoryPage from '@/pages/WalletHistoryPage';
-
 import KYCStatusPage from '@/pages/KYCStatusPage';
 import KYCUploadPage from '@/pages/KYCUploadPage';
-
 import ShareTrading from '@/pages/ShareTrading';
 import ShareTradingTips from '@/pages/ShareTradingTips';
 import TradingChartPage from '@/pages/TradingChartPage';
 import LiveTradingChart from '@/pages/LiveTradingChart';
-
 import UserProfile from '@/pages/UserProfile';
 import UserProfileEditPage from '@/pages/UserProfileEditPage';
 import UserSettingsPage from '@/pages/UserSettingsPage';
@@ -78,7 +73,6 @@ import AdminReferralBonuses from '@/pages/AdminReferralBonuses';
 import AdminKYCReviews from '@/pages/AdminKYCReviewsPage';
 import ReferralLogs from '@/pages/ReferralLogsPage';
 import AdminSearch from '@/pages/AdminSearchPage';
-
 import DealAnalytics from '@/pages/DealAnalytics';
 import AdminDealLog from '@/pages/AdminDealLog';
 import DisputeLogViewer from '@/pages/DisputeLogViewer';
@@ -93,17 +87,14 @@ import FraudDetectionLog from '@/pages/FraudDetectionLog';
 import FraudAlertsPage from '@/pages/FraudAlertsPage';
 import FraudAnalysis from '@/pages/FraudAnalysisPage';
 import AuditLogViewer from '@/pages/AuditLogViewer';
-
 import FinancialReports from '@/pages/FinancialReportsPage';
 import RealTimeMetrics from '@/pages/RealTimeMetricsPage';
 import AdminSettingsCenter from '@/pages/AdminSettingsPage';
-
 import ServerHealth from '@/pages/ServerHealthPage';
 import APIUsageStats from '@/pages/APIUsageStatsPage';
 import ExchangeRatesViewer from '@/pages/ExchangeRatesViewerPage';
 import SystemLogsViewer from '@/pages/SystemLogsViewerPage';
 import SubscriptionPlansManager from '@/pages/SubscriptionPlansManagerPage';
-
 import PitchDeckViewer from '@/pages/PitchDeckViewer';
 import MobileAppPromo from '@/pages/MobileAppPromo';
 import AIInsightCenter from '@/pages/AIInsightCenter';
@@ -120,13 +111,13 @@ export default function AppRoutes() {
       <ScrollToTop />
       <Routes location={location} key={location.pathname}>
         <Route element={<SiteLayout />}>
+          {/* Public */}
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/verify-email" element={<VerifyEmailPage />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
           <Route path="/about" element={<AboutPage />} />
-          <Route path="/deal-chat/:id/:userId" element={<ProtectedUserRoute><DealChatPage /></ProtectedUserRoute>} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/faq" element={<FAQPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
@@ -134,11 +125,15 @@ export default function AppRoutes() {
           <Route path="/refund-policy" element={<RefundPolicy />} />
           <Route path="/docs" element={<DocsPage />} />
           <Route path="/watermark" element={<WatermarkTest />} />
+
+          {/* Blog */}
           <Route path="/blog" element={<BlogListPage />} />
           <Route path="/blog/why-dealcross" element={<WhyDealcrossBeats />} />
           <Route path="/blog/dispute-guide" element={<DisputeResolutionGuide />} />
           <Route path="/blog/fast-payouts" element={<FastPayoutsExplained />} />
           <Route path="/blog/intro" element={<IntroToDealcross />} />
+
+          {/* User */}
           <Route path="/deals" element={<ProtectedUserRoute><DealsPage /></ProtectedUserRoute>} />
           <Route path="/deal-chat/:id/:userId" element={<ProtectedUserRoute><DealChatPage /></ProtectedUserRoute>} />
           <Route path="/start-deal" element={<ProtectedUserRoute><StartDealPage /></ProtectedUserRoute>} />
@@ -164,6 +159,8 @@ export default function AppRoutes() {
           <Route path="/referral" element={<ProtectedUserRoute><ReferralProgram /></ProtectedUserRoute>} />
           <Route path="/security" element={<ProtectedUserRoute><SecurityCenter /></ProtectedUserRoute>} />
           <Route path="/chat/:dealId" element={<ProtectedUserRoute><ChatSupport /></ProtectedUserRoute>} />
+
+          {/* Admin */}
           <Route path="/admin-dashboard" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
           <Route path="/admin-analytics" element={<ProtectedAdminRoute><AdminAnalyticsPage /></ProtectedAdminRoute>} />
           <Route path="/admin-wallet" element={<ProtectedAdminRoute><AdminWallet /></ProtectedAdminRoute>} />
@@ -199,10 +196,11 @@ export default function AppRoutes() {
           <Route path="/mobile-promo" element={<ProtectedAdminRoute><MobileAppPromo /></ProtectedAdminRoute>} />
           <Route path="/ai-insight" element={<ProtectedAdminRoute><AIInsightCenter /></ProtectedAdminRoute>} />
           <Route path="/data-export" element={<ProtectedAdminRoute><DataExportPage /></ProtectedAdminRoute>} />
+
+          {/* Catch-all */}
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
     </AnimatePresence>
   );
-  }
-  
+}
