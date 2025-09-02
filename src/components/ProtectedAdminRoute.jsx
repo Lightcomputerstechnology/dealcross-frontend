@@ -1,26 +1,59 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import API from '@/api'; // Assumes alias '@' is configured
+import { supabase } from '@/lib/supabase';           // ✅ Supabase client
+import API, { getCurrentUser } from '@/api';         // ✅ Fallback to your backend if needed
 
-const ProtectedAdminRoute = ({ children }) => {
+/**
+ * Admin guard:
+ * 1) Try Supabase `profiles.is_admin` (recommended).
+ * 2) If not available/false, fall back to your existing /auth/me (role === 'admin').
+ */
+export default function ProtectedAdminRoute({ children }) {
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    const checkAdminStatus = async () => {
+    let mounted = true;
+    (async () => {
       try {
-        const user = await API.getCurrentUser();
-        if (user.role === 'admin') {
-          setIsAdmin(true);
+        // Ensure there is a signed-in user (Supabase session)
+        const { data: userResp, error: userErr } = await supabase.auth.getUser();
+        if (userErr || !userResp?.user) {
+          if (mounted) { setIsAdmin(false); setLoading(false); }
+          return;
         }
-      } catch (err) {
-        console.error('Admin check failed:', err.message);
-      } finally {
-        setLoading(false);
+
+        const userId = userResp.user.id;
+
+        // --- Primary check: Supabase profiles.is_admin
+        const { data: prof, error: profErr } = await supabase
+          .from('profiles')
+          .select('is_admin')
+          .eq('id', userId)
+          .single();
+
+        if (!profErr && prof?.is_admin === true) {
+          if (mounted) { setIsAdmin(true); setLoading(false); }
+          return;
+        }
+
+        // --- Fallback: your backend /auth/me (expects { role: 'admin' })
+        try {
+          const me = await getCurrentUser(); // or: (await API.get('/auth/me')).data
+          if (me?.role === 'admin') {
+            if (mounted) { setIsAdmin(true); setLoading(false); }
+            return;
+          }
+        } catch {
+          // ignore; will fall through to unauthorized
+        }
+
+        if (mounted) { setIsAdmin(false); setLoading(false); }
+      } catch (e) {
+        if (mounted) { setIsAdmin(false); setLoading(false); }
       }
-    };
-    checkAdminStatus();
+    })();
+    return () => { mounted = false; };
   }, []);
 
   if (loading) {
@@ -31,7 +64,5 @@ const ProtectedAdminRoute = ({ children }) => {
     );
   }
 
-  return isAdmin ? children : <Navigate to="/unauthorized" />;
-};
-
-export default ProtectedAdminRoute;
+  return isAdmin ? children : <Navigate to="/unauthorized" replace />;
+      }
