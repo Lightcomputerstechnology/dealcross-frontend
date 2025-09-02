@@ -1,40 +1,45 @@
 // File: src/hooks/useAuthRedirect.js
-
 import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { getCurrentUser } from '@/api';
 import { toast } from 'react-hot-toast';
+import { supabase } from '@/lib/supabase';
 
 export default function useAuthRedirect(options = {}) {
-  const { adminOnly = false, redirectTo = '/login' } = options;
+  const { redirectTo = '/login' } = options;
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const token = localStorage.getItem('token');
+    let mounted = true;
 
-      if (!token) {
+    const check = async () => {
+      // 1) Check current session
+      const { data, error } = await supabase.auth.getSession();
+      const session = data?.session;
+
+      if (error || !session) {
+        if (!mounted) return;
         toast.error('Please log in first.');
-        return navigate(redirectTo, { replace: true, state: { from: location.pathname } });
+        navigate(redirectTo, { replace: true, state: { from: location.pathname } });
+        return;
       }
 
-      try {
-        const user = await getCurrentUser();
-
-        if (adminOnly && user?.role !== 'admin') {
-          toast.error('Access denied. Admins only.');
-          return navigate('/', { replace: true });
+      // 2) Optionally refresh on changes
+      const { data: sub } = supabase.auth.onAuthStateChange((_evt, newSession) => {
+        if (!mounted) return;
+        if (!newSession) {
+          toast.error('Session expired. Please log in again.');
+          navigate(redirectTo, { replace: true });
         }
+      });
 
-      } catch (err) {
-        toast.error('Session expired. Please log in again.');
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        navigate(redirectTo, { replace: true });
-      }
+      return () => sub?.subscription?.unsubscribe?.();
     };
 
-    checkAuth();
-  }, [adminOnly, redirectTo, navigate, location.pathname]);
+    check();
+    return () => { mounted = false; };
+  }, [redirectTo, navigate, location.pathname]);
+
+  // Return nothing; your ProtectedUserRoute just gates render until redirect happens.
+  return false;
 }
