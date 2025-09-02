@@ -1,16 +1,14 @@
-// File: src/pages/SignupPage.jsx
-
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { register } from '@/api';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { supabase } from '@/lib/supabase';
 
-const SignupPage = () => {
+export default function SignupPage() {
   const navigate = useNavigate();
 
   const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState(''); // stored in user_metadata for now
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -32,9 +30,19 @@ const SignupPage = () => {
 
     setLoading(true);
     try {
-      await register({ email, username, password });
-      setStatus('Signup successful! Redirecting...');
-      setTimeout(() => navigate('/login'), 2000);
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/login`,
+          data: { username },
+        },
+      });
+      if (error) throw error;
+
+      setStatus('Signup successful! Check your email to verify your account.');
+      // Optional redirect after a short delay
+      setTimeout(() => navigate('/login'), 3000);
     } catch (err) {
       setStatus(err.message || 'Signup failed.');
     } finally {
@@ -63,7 +71,7 @@ const SignupPage = () => {
 
           <input
             type="text"
-            placeholder="Username"
+            placeholder="Username (public)"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             className="w-full px-4 py-3 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -113,9 +121,7 @@ const SignupPage = () => {
             <p className="text-sm text-red-400">Passwords do not match</p>
           )}
 
-          {status && (
-            <p className="text-sm text-yellow-500 text-center">{status}</p>
-          )}
+          {status && <p className="text-sm text-yellow-500 text-center">{status}</p>}
 
           <button
             type="submit"
@@ -126,7 +132,7 @@ const SignupPage = () => {
                 : 'bg-blue-600 hover:bg-blue-700 text-white'
             }`}
           >
-            {loading ? 'Creating Account...' : 'Sign Up'}
+            {loading ? 'Creating Account…' : 'Sign Up'}
           </button>
 
           <p className="text-sm text-center text-gray-600 dark:text-gray-400">
@@ -139,6 +145,4 @@ const SignupPage = () => {
       </main>
     </>
   );
-};
-
-export default SignupPage;
+          }
