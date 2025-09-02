@@ -1,36 +1,54 @@
-// File: src/pages/LoginPage.jsx
-
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { login } from '@/api';
 import { motion } from 'framer-motion';
+import { supabase } from '@/lib/supabase';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [status, setStatus] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handlePasswordLogin = async (e) => {
     e.preventDefault();
     if (!email || !password) {
       setStatus('Please enter both email and password.');
       return;
     }
-
+    setLoading(true);
     setStatus('Processing...');
     try {
-      const formData = new URLSearchParams();
-      formData.append('username', email);
-      formData.append('password', password);
-
-      const result = await login(formData);
-      localStorage.setItem('token', result.access_token);
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
       setStatus('Login successful!');
-      navigate('/wallet');
+      navigate('/wallet', { replace: true });
     } catch (err) {
       setStatus(err.message || 'Login failed.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleMagicLink = async () => {
+    if (!email) {
+      setStatus('Enter your email to receive a magic link.');
+      return;
+    }
+    setLoading(true);
+    setStatus('Sending magic link...');
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: { emailRedirectTo: `${window.location.origin}/wallet` },
+      });
+      if (error) throw error;
+      setStatus('Magic link sent. Check your inbox.');
+    } catch (err) {
+      setStatus(err.message || 'Could not send magic link.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -43,7 +61,7 @@ export default function LoginPage() {
 
       <main className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-950 text-gray-900 dark:text-white px-4">
         <motion.form
-          onSubmit={handleSubmit}
+          onSubmit={handlePasswordLogin}
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -69,15 +87,23 @@ export default function LoginPage() {
             required
           />
 
-          {status && (
-            <p className="text-sm text-center text-yellow-500">{status}</p>
-          )}
+          {status && <p className="text-sm text-center text-yellow-500">{status}</p>}
 
           <button
             type="submit"
-            className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition"
+            disabled={loading}
+            className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition disabled:opacity-60"
           >
-            Login
+            {loading ? 'Signing in…' : 'Sign in'}
+          </button>
+
+          <button
+            type="button"
+            onClick={handleMagicLink}
+            disabled={loading}
+            className="w-full py-3 border border-blue-600 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 font-semibold rounded-lg transition disabled:opacity-60"
+          >
+            {loading ? 'Sending…' : 'Send magic link to email'}
           </button>
 
           <p className="text-sm text-center text-gray-600 dark:text-gray-400">
@@ -90,4 +116,4 @@ export default function LoginPage() {
       </main>
     </>
   );
-}
+  }
