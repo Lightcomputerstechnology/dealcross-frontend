@@ -1,6 +1,7 @@
 // File: src/api.js
 
 import axios from 'axios';
+import { supabase } from './lib/supabase'; // ✅ NEW: Supabase client
 
 // Axios instance
 const API = axios.create({
@@ -8,12 +9,29 @@ const API = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
-// Attach auth token automatically
-API.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  if (token) config.headers.Authorization = `Bearer ${token}`;
-  return config;
-});
+// ✅ Attach auth token automatically (Supabase session first, fallback to localStorage)
+API.interceptors.request.use(
+  async (config) => {
+    try {
+      const { data } = await supabase.auth.getSession();
+      const sbToken = data?.session?.access_token;
+      const token = sbToken || localStorage.getItem('token');
+
+      if (token) {
+        config.headers = config.headers || {};
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    } catch {
+      const token = localStorage.getItem('token');
+      if (token) {
+        config.headers = config.headers || {};
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 // Centralized error handler
 const handleError = (error) => {
@@ -30,7 +48,6 @@ const handleError = (error) => {
 
 //
 // ========== AUTH ==========
-//
 export const register = async (data) => {
   try {
     const res = await API.post('/auth/signup', data);
@@ -71,7 +88,6 @@ export const getCurrentUser = async () => {
 
 //
 // ========== WALLET ==========
-//
 export const fundWalletCard = async (amount) => {
   try {
     const res = await API.post('/wallet/fund/card', { amount });
@@ -128,7 +144,6 @@ export const getWalletSummary = async () => {
 
 //
 // ========== KYC ==========
-//
 export const getKYCStatus = async () => {
   try {
     const res = await API.get('/kyc/my-status');
@@ -140,7 +155,6 @@ export const getKYCStatus = async () => {
 
 //
 // ========== DEALS ==========
-//
 export const getMyDeals = async () => {
   try {
     const res = await API.get('/deals/tracker');
@@ -215,7 +229,6 @@ export const confirmPairing = async (pairingId) => {
 
 //
 // ========== SUBSCRIPTION UPGRADE ==========
-//
 export const upgradeSubscriptionCard = async (plan) => {
   try {
     const res = await API.post('/subscriptions/upgrade/card', { plan });
@@ -245,7 +258,6 @@ export const upgradeSubscriptionCrypto = async (plan, cryptoType) => {
 
 //
 // ========== ADMIN USER MANAGEMENT ==========
-//
 export const getAllUsers = async () => {
   try {
     const res = await API.get('/admin/all-users');
@@ -284,7 +296,6 @@ export const approveUser = async (userId, note) => {
 
 //
 // ========== ADMIN LOGS & METRICS ==========
-//
 export const getAuditLogs = async () => {
   try {
     const res = await API.get('/admin/audit-logs');
@@ -340,7 +351,6 @@ export const getThreadMessages = async (threadId) => {
     handleError(err);
   }
 };
-
 
 //
 // ========== INVESTOR ==========
@@ -447,7 +457,6 @@ export const getServerHealth = async () => {
   }
 };
 
-
 // Upload KYC documents (multipart/form-data)
 export const uploadKYC = async (formData) => {
   try {
@@ -483,7 +492,6 @@ export const getUserSettings = async () => {
   }
 };
 
-
 // Admin: Get all pending deals
 export const getPendingDeals = async () => {
   try {
@@ -494,7 +502,6 @@ export const getPendingDeals = async () => {
   }
 };
 
-
 // Admin: Approve a deal by ID
 export const approveDealById = async (dealId) => {
   try {
@@ -504,7 +511,6 @@ export const approveDealById = async (dealId) => {
     handleError(err);
   }
 };
-
 
 // Fetch chat messages for a specific deal
 export const getDealMessages = async (dealId) => {
@@ -588,6 +594,5 @@ export const updateKYCStatus = async (kycId, statusData) => {
     handleError(err);
   }
 };
-
 
 export default API;
