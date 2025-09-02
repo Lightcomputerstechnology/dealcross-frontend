@@ -3,16 +3,9 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import ScrollToTop from '@/components/ScrollToTop';
 import SiteLayout from '@/layouts/SiteLayout';
-import useAuthRedirect from '@/hooks/useAuthRedirect';
 
 import ProtectedAdminRoute from '@/components/ProtectedAdminRoute';
-
-// ✅ Route guard
-const ProtectedUserRoute = ({ children }) => {
-  const shouldRedirect = useAuthRedirect();
-  if (shouldRedirect) return null; // Prevent render if redirect is triggered
-  return children;
-};
+import ProtectedUserRoute from '@/components/ProtectedUserRoute'; // ✅ NEW import
 
 // Public Pages
 import LandingPage from '@/pages/LandingPage';
