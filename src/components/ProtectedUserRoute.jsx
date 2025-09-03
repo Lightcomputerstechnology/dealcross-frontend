@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
+import LoadingScreen from "@/components/LoadingScreen";
 
 export default function ProtectedUserRoute({ children }) {
   const [loading, setLoading] = useState(true);
@@ -30,13 +31,6 @@ export default function ProtectedUserRoute({ children }) {
     };
   }, []);
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <span className="text-gray-600 dark:text-gray-300 text-lg">Loading…</span>
-      </div>
-    );
-  }
-
+  if (loading) return <LoadingScreen label="Checking your session…" />;
   return session ? children : <Navigate to="/login" replace />;
 }
