@@ -1,12 +1,14 @@
+// File: src/components/ProtectedAdminRoute.jsx
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { supabase } from '@/lib/supabase';           // ✅ Supabase client
-import API, { getCurrentUser } from '@/api';         // ✅ Fallback to your backend if needed
+import { supabase } from '@/lib/supabase';
+import API, { getCurrentUser } from '@/api';
+import LoadingScreen from '@/components/LoadingScreen';
 
 /**
  * Admin guard:
- * 1) Try Supabase `profiles.is_admin` (recommended).
- * 2) If not available/false, fall back to your existing /auth/me (role === 'admin').
+ * 1) Try Supabase `profiles.is_admin`.
+ * 2) If not true, fallback to backend `/auth/me` expecting { role: 'admin' }.
  */
 export default function ProtectedAdminRoute({ children }) {
   const [loading, setLoading] = useState(true);
@@ -16,7 +18,6 @@ export default function ProtectedAdminRoute({ children }) {
     let mounted = true;
     (async () => {
       try {
-        // Ensure there is a signed-in user (Supabase session)
         const { data: userResp, error: userErr } = await supabase.auth.getUser();
         if (userErr || !userResp?.user) {
           if (mounted) { setIsAdmin(false); setLoading(false); }
@@ -25,7 +26,7 @@ export default function ProtectedAdminRoute({ children }) {
 
         const userId = userResp.user.id;
 
-        // --- Primary check: Supabase profiles.is_admin
+        // Primary: Supabase profiles.is_admin
         const { data: prof, error: profErr } = await supabase
           .from('profiles')
           .select('is_admin')
@@ -37,32 +38,25 @@ export default function ProtectedAdminRoute({ children }) {
           return;
         }
 
-        // --- Fallback: your backend /auth/me (expects { role: 'admin' })
+        // Fallback: backend role
         try {
-          const me = await getCurrentUser(); // or: (await API.get('/auth/me')).data
+          const me = await getCurrentUser();
           if (me?.role === 'admin') {
             if (mounted) { setIsAdmin(true); setLoading(false); }
             return;
           }
         } catch {
-          // ignore; will fall through to unauthorized
+          // ignore; fall through
         }
 
         if (mounted) { setIsAdmin(false); setLoading(false); }
-      } catch (e) {
+      } catch {
         if (mounted) { setIsAdmin(false); setLoading(false); }
       }
     })();
     return () => { mounted = false; };
   }, []);
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <span className="text-gray-600 dark:text-gray-300 text-lg">Checking admin access...</span>
-      </div>
-    );
-  }
-
+  if (loading) return <LoadingScreen label="Checking admin access…" />;
   return isAdmin ? children : <Navigate to="/unauthorized" replace />;
-      }
+            }
