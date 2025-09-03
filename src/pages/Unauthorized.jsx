@@ -1,50 +1,51 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { LockKey } from 'lucide-react';
+// File: src/pages/Unauthorized.jsx
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
-const Unauthorized = () => {
-  const [seconds, setSeconds] = useState(10);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (seconds === 0) {
-      navigate('/');
-    }
-
-    const timer = setInterval(() => {
-      setSeconds((prev) => prev - 1);
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [seconds, navigate]);
+export default function Unauthorized() {
+  const location = useLocation();
+  const from = location.state?.from ?? '/';
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-gray-900 px-4 text-center">
-      <div className="bg-red-100 dark:bg-red-900 p-6 rounded-2xl shadow-md max-w-md w-full">
-        <div className="flex items-center justify-center mb-4">
-          <LockKeyhole className="h-10 w-10 text-red-600 dark:text-red-300" />
+    <main className="min-h-[70vh] flex items-center justify-center bg-white dark:bg-gray-950 text-gray-900 dark:text-white px-4">
+      <div className="max-w-lg w-full text-center bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow p-8 space-y-5">
+        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+          </svg>
         </div>
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">
-          Access Denied
-        </h1>
-        <p className="text-gray-600 dark:text-gray-300 mb-4">
-          You don’t have permission to view this page.
-        </p>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-          Redirecting to homepage in <span className="font-medium">{seconds}</span> seconds...
-        </p>
-        <Link
-          to="/"
-          className="inline-block px-6 py-2 text-sm font-medium bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition"
-        >
-          Go Home Now
-        </Link>
-        <p className="mt-4 text-xs text-gray-400 dark:text-gray-500">
-          Need help? Contact support or an admin.
-        </p>
-      </div>
-    </div>
-  );
-};
 
-export default Unauthorized;
+        <h1 className="text-2xl font-bold">Unauthorized</h1>
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          You don’t have permission to view this page. If you think this is a mistake, please contact support or try a different account.
+        </p>
+
+        <div className="flex flex-col sm:flex-row gap-3 justify-center mt-4">
+          <Link
+            to="/login"
+            className="px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white text-sm"
+            state={{ from }}
+          >
+            Login with another account
+          </Link>
+          <Link
+            to="/"
+            className="px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 text-sm hover:bg-gray-50 dark:hover:bg-gray-800"
+          >
+            Back to Home
+          </Link>
+          <Link
+            to="/contact"
+            className="px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 text-sm hover:bg-gray-50 dark:hover:bg-gray-800"
+          >
+            Contact Support
+          </Link>
+        </div>
+
+        <div className="text-[12px] text-gray-500 dark:text-gray-400 mt-3">
+          Tip: If you’re an admin, ensure your account is marked <code>is_admin = true</code> in <code>public.profiles</code>.
+        </div>
+      </div>
+    </main>
+  );
+                                                                                                   }
