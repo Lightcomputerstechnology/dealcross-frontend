@@ -124,4 +124,3 @@ export const AuthProvider = ({ children }) => {
 
 // Convenience hook
 export const useAuth = () => useContext(AuthContext);
-```0
