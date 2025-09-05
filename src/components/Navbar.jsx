@@ -1,3 +1,4 @@
+// File: src/components/Navbar.jsx
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Menu as MenuIcon, X as XIcon } from 'react-feather';
@@ -102,7 +103,7 @@ export default function Navbar() {
               </button>
             </>
           )}
-          <button onClick={() => setOpen(!open)}>
+          <button onClick={() => setOpen(!open)} aria-label="Toggle menu">
             {open ? (
               <XIcon className="h-6 w-6 text-gray-900 dark:text-white" />
             ) : (
