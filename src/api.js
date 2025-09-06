@@ -1,22 +1,29 @@
 // File: src/api.js
-
 import axios from 'axios';
-import { supabase } from './lib/supabase'; // ✅ NEW: Supabase client
+import { supabase } from './lib/supabase';
 
-// Axios instance
+/**
+ * Use Vite env if present. Fallback to your current Render backend URL.
+ * Change VITE_API_URL in your frontend .env if needed.
+ */
+const BASE_URL =
+  import.meta?.env?.VITE_API_URL?.replace(/\/+$/, '') ||
+  'https://dealcross-backend-final-1aac.onrender.com';
+
 const API = axios.create({
-  baseURL: 'https://d-final.onrender.com',
+  baseURL: BASE_URL,
   headers: { 'Content-Type': 'application/json' },
 });
 
-// ✅ Attach auth token automatically (Supabase session first, fallback to localStorage)
+/**
+ * Attach Supabase JWT first; fallback to legacy localStorage token (for older flows)
+ */
 API.interceptors.request.use(
   async (config) => {
     try {
       const { data } = await supabase.auth.getSession();
       const sbToken = data?.session?.access_token;
       const token = sbToken || localStorage.getItem('token');
-
       if (token) {
         config.headers = config.headers || {};
         config.headers.Authorization = `Bearer ${token}`;
@@ -33,7 +40,6 @@ API.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Centralized error handler
 const handleError = (error) => {
   console.error('API Error:', error);
   if (error.response) {
@@ -46,10 +52,13 @@ const handleError = (error) => {
   }
 };
 
-//
-// ========== AUTH ==========
+/* =========================
+ * AUTH
+ * =======================*/
 export const register = async (data) => {
   try {
+    // If you actually register with Supabase on the client,
+    // you may not need this. Keeping because your backend exposes /auth/signup.
     const res = await API.post('/auth/signup', data);
     return res.data;
   } catch (err) {
@@ -59,18 +68,10 @@ export const register = async (data) => {
 
 export const login = async (formData) => {
   try {
+    // Legacy password flow (if still enabled server-side)
     const res = await API.post('/auth/login', formData, {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     });
-    return res.data;
-  } catch (err) {
-    handleError(err);
-  }
-};
-
-export const forgotPassword = async (email) => {
-  try {
-    const res = await API.post('/auth/forgot-password', { email });
     return res.data;
   } catch (err) {
     handleError(err);
@@ -86,38 +87,18 @@ export const getCurrentUser = async () => {
   }
 };
 
-//
-// ========== WALLET ==========
-export const fundWalletCard = async (amount) => {
+/* =========================
+ * WALLET
+ * backend:
+ *  - GET /wallet/my-wallet
+ *  - GET /wallet/transactions
+ *  - POST /wallet/fund/card?amount=..
+ *  - POST /wallet/fund/bank?amount=..
+ *  - POST /wallet/fund/crypto?amount=..&crypto=..
+ * =======================*/
+export const getWalletSummary = async () => {
   try {
-    const res = await API.post('/wallet/fund/card', { amount });
-    return res.data;
-  } catch (err) {
-    handleError(err);
-  }
-};
-
-export const fundWalletBank = async (amount) => {
-  try {
-    const res = await API.post('/wallet/fund/bank', { amount });
-    return res.data;
-  } catch (err) {
-    handleError(err);
-  }
-};
-
-export const fundWalletCrypto = async (amount, cryptoType) => {
-  try {
-    const res = await API.post('/wallet/fund/crypto', { amount, crypto_type: cryptoType });
-    return res.data;
-  } catch (err) {
-    handleError(err);
-  }
-};
-
-export const getWalletBalance = async () => {
-  try {
-    const res = await API.get('/wallet/balance');
+    const res = await API.get('/wallet/my-wallet');
     return res.data;
   } catch (err) {
     handleError(err);
@@ -133,40 +114,81 @@ export const getWalletHistory = async () => {
   }
 };
 
-export const getWalletSummary = async () => {
+export const fundWalletCard = async (amount) => {
   try {
-    const res = await API.get('/wallet/summary');
+    // backend expects query param `amount`
+    const res = await API.post('/wallet/fund/card', null, { params: { amount } });
     return res.data;
   } catch (err) {
     handleError(err);
   }
 };
 
-//
-// ========== KYC ==========
+export const fundWalletBank = async (amount) => {
+  try {
+    const res = await API.post('/wallet/fund/bank', null, { params: { amount } });
+    return res.data;
+  } catch (err) {
+    handleError(err);
+  }
+};
+
+export const fundWalletCrypto = async (amount, crypto) => {
+  try {
+    const res = await API.post('/wallet/fund/crypto', null, { params: { amount, crypto } });
+    return res.data;
+  } catch (err) {
+    handleError(err);
+  }
+};
+
+/* =========================
+ * KYC
+ * backend:
+ *  - POST /kyc/                 (KYCRequestCreate JSON)
+ *  - GET  /kyc/my-kyc
+ * =======================*/
 export const getKYCStatus = async () => {
   try {
-    const res = await API.get('/kyc/my-status');
+    const res = await API.get('/kyc/my-kyc');
     return res.data;
   } catch (err) {
     handleError(err);
   }
 };
 
-//
-// ========== DEALS ==========
-export const getMyDeals = async () => {
+// Upload KYC: backend expects JSON (document_type, document_url)
+export const uploadKYC = async ({ document_type, document_url }) => {
   try {
-    const res = await API.get('/deals/tracker');
-    return res.data.data;
+    const res = await API.post('/kyc/', { document_type, document_url });
+    return res.data;
   } catch (err) {
     handleError(err);
   }
 };
 
-export const getConfirmedPairing = async () => {
+/* =========================
+ * DEALS
+ * backend:
+ *  - GET  /deals/pairing/pending
+ *  - POST /deals/pairing/confirm/{deal_id}
+ *  - POST /deals/{deal_id}/fund
+ *  - POST /deals/{deal_id}/deliver
+ *  - POST /deals/{deal_id}/release
+ *  - POST /deals/{deal_id}/dispute
+ * =======================*/
+export const getPendingPairings = async () => {
   try {
-    const res = await API.get('/deals/pairing/confirmed');
+    const res = await API.get('/deals/pairing/pending');
+    return res.data;
+  } catch (err) {
+    handleError(err);
+  }
+};
+
+export const confirmPairing = async (dealId) => {
+  try {
+    const res = await API.post(`/deals/pairing/confirm/${dealId}`);
     return res.data;
   } catch (err) {
     handleError(err);
@@ -182,9 +204,9 @@ export const fundDeal = async (dealId) => {
   }
 };
 
-export const deliverDeal = async (dealId, deliveryData) => {
+export const deliverDeal = async (dealId) => {
   try {
-    const res = await API.post(`/deals/${dealId}/deliver`, deliveryData);
+    const res = await API.post(`/deals/${dealId}/deliver`);
     return res.data;
   } catch (err) {
     handleError(err);
@@ -200,102 +222,95 @@ export const releaseDeal = async (dealId) => {
   }
 };
 
-export const disputeDeal = async (dealId, reason) => {
+export const disputeDeal = async (dealId, reason, details = '') => {
   try {
-    const res = await API.post('/disputes/', { deal_id: dealId, reason });
+    // Your disputes router expects { deal_id, reason, details }
+    const res = await API.post(`/disputes/`, { deal_id: dealId, reason, details });
     return res.data;
   } catch (err) {
     handleError(err);
   }
 };
 
-export const getPendingPairings = async () => {
-  try {
-    const res = await API.get('/deals/pairing/pending');
-    return res.data;
-  } catch (err) {
-    handleError(err);
-  }
+/* =========================
+ * SUBSCRIPTION
+ * backend: POST /subscription/upgrade
+ * payload: { plan, payment_method }
+ * =======================*/
+const upgrade = async (plan, payment_method) => {
+  const payload = { plan, payment_method };
+  const res = await API.post('/subscription/upgrade', payload);
+  return res.data;
 };
 
-export const confirmPairing = async (pairingId) => {
-  try {
-    const res = await API.post(`/deals/pairing/confirm/${pairingId}`);
-    return res.data;
-  } catch (err) {
-    handleError(err);
-  }
-};
-
-//
-// ========== SUBSCRIPTION UPGRADE ==========
 export const upgradeSubscriptionCard = async (plan) => {
   try {
-    const res = await API.post('/subscriptions/upgrade/card', { plan });
-    return res.data;
+    return await upgrade(plan, 'card');
   } catch (err) {
     handleError(err);
   }
 };
-
 export const upgradeSubscriptionBank = async (plan) => {
   try {
-    const res = await API.post('/subscriptions/upgrade/bank', { plan });
-    return res.data;
+    return await upgrade(plan, 'bank');
   } catch (err) {
     handleError(err);
   }
 };
-
-export const upgradeSubscriptionCrypto = async (plan, cryptoType) => {
+export const upgradeSubscriptionCrypto = async (plan) => {
   try {
-    const res = await API.post('/subscriptions/upgrade/crypto', { plan, crypto_type: cryptoType });
+    return await upgrade(plan, 'crypto');
+  } catch (err) {
+    handleError(err);
+  }
+};
+
+/* =========================
+ * USER PROFILE / SETTINGS
+ * backend:
+ *  - GET  /user/profile
+ *  - PUT  /user/profile/update
+ *  - GET  /user/settings
+ * =======================*/
+export const updateProfile = async (updates) => {
+  try {
+    const res = await API.put('/user/profile/update', updates);
     return res.data;
   } catch (err) {
     handleError(err);
   }
 };
 
-//
-// ========== ADMIN USER MANAGEMENT ==========
+export const getUserSettings = async () => {
+  try {
+    const res = await API.get('/user/settings');
+    return res.data?.data;
+  } catch (err) {
+    handleError(err);
+  }
+};
+
+/* =========================
+ * ADMIN (present in your codebase)
+ * backend:
+ *  - GET  /admin/users
+ *  - GET  /admin/audit-logs
+ *  - GET  /admin/dashboard-metrics
+ *  - GET  /admin-wallet/logs
+ *  - POST /admin-wallet/adjust
+ *  - GET  /admin/referrals/rewards
+ *  - GET  /admin/kyc/pending
+ *  - POST /admin/kyc/{kyc_id}/review
+ * =======================*/
 export const getAllUsers = async () => {
   try {
-    const res = await API.get('/admin/all-users');
+    const res = await API.get('/admin/users');
     return res.data;
   } catch (err) {
     handleError(err);
   }
 };
 
-export const banUser = async (userId, reason) => {
-  try {
-    const res = await API.put(`/admin/ban-user/${userId}`, { reason });
-    return res.data;
-  } catch (err) {
-    handleError(err);
-  }
-};
-
-export const unbanUser = async (userId) => {
-  try {
-    const res = await API.put(`/admin/unban-user/${userId}`);
-    return res.data;
-  } catch (err) {
-    handleError(err);
-  }
-};
-
-export const approveUser = async (userId, note) => {
-  try {
-    const res = await API.post(`/admin/approve-user/${userId}`, { note });
-    return res.data;
-  } catch (err) {
-    handleError(err);
-  }
-};
-
-//
-// ========== ADMIN LOGS & METRICS ==========
 export const getAuditLogs = async () => {
   try {
     const res = await API.get('/admin/audit-logs');
@@ -307,245 +322,13 @@ export const getAuditLogs = async () => {
 
 export const getAdminMetrics = async () => {
   try {
-    const res = await API.get('/admin-metrics');
+    const res = await API.get('/admin/dashboard-metrics');
     return res.data;
   } catch (err) {
     handleError(err);
   }
 };
 
-export const getFraudReports = async () => {
-  try {
-    const res = await API.get('/admin/fraud-reports');
-    return res.data;
-  } catch (err) {
-    handleError(err);
-  }
-};
-
-export const getAdminChartData = async () => {
-  try {
-    const res = await API.get('/admin/charts');
-    return res.data;
-  } catch (err) {
-    handleError(err);
-  }
-};
-
-//
-// ========== ADMIN CHAT THREADS ==========
-export const getAllChatThreads = async () => {
-  try {
-    const res = await API.get('/admin/chat/threads');
-    return res.data;
-  } catch (err) {
-    handleError(err);
-  }
-};
-
-export const getThreadMessages = async (threadId) => {
-  try {
-    const res = await API.get(`/admin/chat/threads/${threadId}`);
-    return res.data;
-  } catch (err) {
-    handleError(err);
-  }
-};
-
-//
-// ========== INVESTOR ==========
-export const getInvestorReports = async () => {
-  try {
-    const res = await API.get('/investor/reports');
-    return res.data;
-  } catch (err) {
-    handleError(err);
-  }
-};
-
-//
-// ========== ESCROW ==========
-export const getEscrowTracker = async () => {
-  try {
-    const res = await API.get('/escrow-tracker');
-    return res.data;
-  } catch (err) {
-    handleError(err);
-  }
-};
-
-//
-// ========== SHARE TRADING ==========
-export const getShareTradingTips = async () => {
-  try {
-    const res = await API.get('/share-trading/tips');
-    return res.data;
-  } catch (err) {
-    handleError(err);
-  }
-};
-
-//
-// ========== CHAT SUPPORT ==========
-export const getChatMessages = async (dealId) => {
-  try {
-    const res = await API.get(`/chat/messages?deal_id=${dealId}`);
-    return res.data;
-  } catch (err) {
-    handleError(err);
-  }
-};
-
-export const sendMessage = async (dealId, message) => {
-  try {
-    const res = await API.post('/chat/send', {
-      deal_id: dealId,
-      message: message,
-    });
-    return res.data;
-  } catch (err) {
-    handleError(err);
-  }
-};
-
-export const markMessagesAsRead = async (dealId) => {
-  try {
-    const res = await API.post(`/chat/mark-read`, { deal_id: dealId });
-    return res.data;
-  } catch (err) {
-    handleError(err);
-  }
-};
-
-export const getUnreadMessageCount = async () => {
-  try {
-    const res = await API.get('/chat/unread-count');
-    return res.data;
-  } catch (err) {
-    handleError(err);
-  }
-};
-
-//
-// ========== BLOG ==========
-export const getBlogPosts = async () => {
-  try {
-    const res = await API.get('/blog/posts');
-    return res.data;
-  } catch (err) {
-    handleError(err);
-  }
-};
-
-export const getBlogDetails = async (slug) => {
-  try {
-    const res = await API.get(`/blog/posts/${slug}`);
-    return res.data;
-  } catch (err) {
-    handleError(err);
-  }
-};
-
-//
-// ========== SYSTEM HEALTH ==========
-export const getServerHealth = async () => {
-  try {
-    const res = await API.get('/system/health');
-    return res.data;
-  } catch (err) {
-    handleError(err);
-  }
-};
-
-// Upload KYC documents (multipart/form-data)
-export const uploadKYC = async (formData) => {
-  try {
-    const res = await API.post('/kyc/submit', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
-    return res.data;
-  } catch (err) {
-    console.error('uploadKYC failed:', err);
-    throw new Error('KYC upload failed.');
-  }
-};
-
-// Update current user profile (username/email/password)
-export const updateProfile = async (updates) => {
-  try {
-    const res = await API.put('/user/profile/update', updates);
-    return res.data;
-  } catch (err) {
-    console.error('updateProfile failed:', err);
-    throw new Error('Profile update failed.');
-  }
-};
-
-// Retrieve user settings and fee tiers
-export const getUserSettings = async () => {
-  try {
-    const res = await API.get('/user/settings');
-    return res.data.data;
-  } catch (err) {
-    console.error('getUserSettings failed:', err);
-    throw new Error('Could not fetch user settings.');
-  }
-};
-
-// Admin: Get all pending deals
-export const getPendingDeals = async () => {
-  try {
-    const res = await API.get('/admin/pending-deals');
-    return res.data;
-  } catch (err) {
-    handleError(err);
-  }
-};
-
-// Admin: Approve a deal by ID
-export const approveDealById = async (dealId) => {
-  try {
-    const res = await API.post(`/admin/approve-deal/${dealId}`);
-    return res.data;
-  } catch (err) {
-    handleError(err);
-  }
-};
-
-// Fetch chat messages for a specific deal
-export const getDealMessages = async (dealId) => {
-  try {
-    const res = await API.get(`/chat/messages?deal_id=${dealId}`);
-    return res.data;
-  } catch (err) {
-    handleError(err);
-  }
-};
-
-// Send a chat message in a deal
-export const sendDealMessage = async (dealId, message) => {
-  try {
-    const res = await API.post('/chat/send', {
-      deal_id: dealId,
-      message: message,
-    });
-    return res.data;
-  } catch (err) {
-    handleError(err);
-  }
-};
-
-// Mark all deal messages as read
-export const markDealChatAsRead = async (dealId) => {
-  try {
-    const res = await API.post(`/chat/mark-read`, { deal_id: dealId });
-    return res.data;
-  } catch (err) {
-    handleError(err);
-  }
-};
-
-// Get admin wallet logs
 export const getAdminWalletLogs = async () => {
   try {
     const res = await API.get('/admin-wallet/logs');
@@ -555,7 +338,6 @@ export const getAdminWalletLogs = async () => {
   }
 };
 
-// Manually credit or debit the admin wallet
 export const adjustAdminWallet = async (payload) => {
   try {
     const res = await API.post('/admin-wallet/adjust', payload);
@@ -565,30 +347,76 @@ export const adjustAdminWallet = async (payload) => {
   }
 };
 
-// Get all referral reward logs
 export const getReferralRewards = async () => {
   try {
-    const res = await API.get('/admin/referral-rewards');
+    // routers.admin_referrals → prefix "/admin/referrals" + "/rewards"
+    const res = await API.get('/admin/referrals/rewards');
     return res.data;
   } catch (err) {
     handleError(err);
   }
 };
 
-// Get all submitted KYC requests
 export const getAllKYCRequests = async () => {
   try {
-    const res = await API.get('/admin/kyc/requests');
+    // list pending
+    const res = await API.get('/admin/kyc/pending');
     return res.data;
   } catch (err) {
     handleError(err);
   }
 };
 
-// Approve or reject a specific KYC submission
-export const updateKYCStatus = async (kycId, statusData) => {
+export const updateKYCStatus = async (kycId, status, note = '') => {
   try {
-    const res = await API.post(`/admin/kyc/${kycId}/update`, statusData);
+    // schemas.kyc_schema.KYCStatusUpdate { status, note }
+    const res = await API.post(`/admin/kyc/${kycId}/review`, { status, note });
+    return res.data;
+  } catch (err) {
+    handleError(err);
+  }
+};
+
+/* =========================
+ * CHAT
+ * backend:
+ *  - POST /chat/send            { receiver_id, content, deal_id? }
+ *  - GET  /chat/messages/{user_id}
+ *  - GET  /chat/unread
+ *  - POST /chat/mark-read/{user_id}
+ * =======================*/
+export const getChatMessages = async (userId) => {
+  try {
+    const res = await API.get(`/chat/messages/${userId}`);
+    return res.data;
+  } catch (err) {
+    handleError(err);
+  }
+};
+
+export const sendMessage = async ({ receiverId, content, dealId = null }) => {
+  try {
+    const body = { receiver_id: receiverId, content };
+    if (dealId) body.deal_id = dealId;
+    const res = await API.post('/chat/send', body);
+    return res.data;
+  } catch (err) {
+    handleError(err);
+  }
+};
+
+export const markMessagesAsRead = async (userId) => {
+  try {
+    const res = await API.post(`/chat/mark-read/${userId}`);
+    return res.data;
+  } catch (err) {
+    handleError(err);
+  }
+};
+
+export const getUnreadMessageCount = async () => {
+  try {
+    const res = await API.get('/chat/unread');
     return res.data;
   } catch (err) {
     handleError(err);
