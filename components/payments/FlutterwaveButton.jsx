@@ -1,4 +1,4 @@
-// components/payments/FlutterwaveButton.jsx
+// src/components/payments/FlutterwaveButton.jsx
 import { useEffect } from "react";
 
 const FlutterwaveButton = ({ amount, email, name, tx_ref, onSuccess }) => {
