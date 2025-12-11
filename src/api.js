@@ -437,4 +437,18 @@ export const getBlogPosts = async () => {
   }
 };
 
+/* =========================
+ * BLOG DETAILS
+ * backend:
+ *  - GET /blogs/{id}
+ * =======================*/
+export const getBlogDetails = async (blogId) => {
+  try {
+    const res = await API.get(`/blogs/${blogId}`);
+    return res.data;
+  } catch (err) {
+    handleError(err);
+  }
+};
+
 export default API;
