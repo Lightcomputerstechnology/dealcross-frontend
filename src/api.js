@@ -423,4 +423,18 @@ export const getUnreadMessageCount = async () => {
   }
 };
 
+/* =========================
+ * BLOGS
+ * backend:
+ *  - GET /blogs
+ * =======================*/
+export const getBlogPosts = async () => {
+  try {
+    const res = await API.get('/blogs');
+    return res.data;
+  } catch (err) {
+    handleError(err);
+  }
+};
+
 export default API;
