@@ -451,4 +451,18 @@ export const getBlogDetails = async (blogId) => {
   }
 };
 
+/* =========================
+ * MY DEALS
+ * backend:
+ *  - GET /deals/my
+ * =======================*/
+export const getMyDeals = async () => {
+  try {
+    const res = await API.get('/deals/my');
+    return res.data;
+  } catch (err) {
+    handleError(err);
+  }
+};
+
 export default API;
